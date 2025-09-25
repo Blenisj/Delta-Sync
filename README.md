@@ -1,3 +1,6 @@
 # Delta-Sync
 
-This is the readme file
+Resources, Links, etc...
+
+### React Bootstrap
+https://react-bootstrap.netlify.app/
