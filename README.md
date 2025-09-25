@@ -1,3 +1,3 @@
 # Delta-Sync
 
-This is thje readme file
+This is the readme file
