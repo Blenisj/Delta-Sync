@@ -13,6 +13,11 @@ telemetry_data = []
 last_save_time = 0
 save_interval = 5  # seconds (yes it made alot of stuff in the JSON but it shall look sexy once we make a nice final output)
 
+# Potential fix to reducing the JSON file size by 67 percent (siiiix seveennnnnnnnn)
+last_sample_time = 0
+sample_interval = 0.1  # seconds (10 samples per second)
+
+
 def acMain(ac_version):
     global appWindow, speed_label
     appWindow = ac.newApp(APP_NAME)
@@ -30,7 +35,16 @@ def acMain(ac_version):
     return APP_NAME
 
 def acUpdate(deltaT):
-    global last_save_time
+    global last_save_time, last_sample_time
+
+    # accumulate time
+    last_sample_time += deltaT
+
+    # only log when enough time has passed
+    if last_sample_time < sample_interval:
+        return
+    last_sample_time = 0
+
     speed = ac.getCarState(0, acsys.CS.SpeedKMH)
     rpm = ac.getCarState(0, acsys.CS.RPM)
     gear = ac.getCarState(0, acsys.CS.Gear)
