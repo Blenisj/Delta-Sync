@@ -1,0 +1,10 @@
+{
+  "name": "delta-sync",
+  "version": "1.0.0",
+  "description": "Assetto Corsa telemetry analysis app",
+  "private": true,
+  "workspaces": [
+    "client",
+    "backend"
+  ]
+}
