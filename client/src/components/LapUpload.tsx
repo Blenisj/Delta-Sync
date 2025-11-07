@@ -1,74 +1,76 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Upload, Plus } from "lucide-react";
+import { Upload } from "lucide-react";
 import type { LapData } from "../types/racing";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 interface LapUploadProps {
   onAddLap: (lap: LapData) => void;
 }
 
 export function LapUpload({ onAddLap }: LapUploadProps) {
-  const [formData, setFormData] = useState({
-    trackName: "",
-    carModel: "",
-    lapTime: "",
-    weather: "",
-    temperature: "",
-    topSpeed: "",
-    sector1: "",
-    sector2: "",
-    sector3: ""
-  });
+  const [telemetry, setTelemetry] = useState<any[]>([]);
+  const [fileName, setFileName] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.trackName || !formData.carModel || !formData.lapTime) {
-      return;
-    }
+  // Parse telemetry JSON
+  const handleFileUpload = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const json = JSON.parse(e.target?.result as string);
+        if (!Array.isArray(json)) throw new Error("Invalid telemetry JSON format");
 
-    const lapTimeMs = parseFloat(formData.lapTime) * 1000;
-    const sectorTimes = [
-      parseFloat(formData.sector1 || "0") * 1000,
-      parseFloat(formData.sector2 || "0") * 1000,
-      parseFloat(formData.sector3 || "0") * 1000
-    ];
+        setTelemetry(json);
+        localStorage.setItem("lastUploadedTelemetry", JSON.stringify(json));
+        setFileName(file.name);
 
-    const newLap: LapData = {
-      id: Date.now().toString(),
-      trackName: formData.trackName,
-      carModel: formData.carModel,
-      lapTime: lapTimeMs,
-      dateRecorded: new Date(),
-      weather: formData.weather as 'dry' | 'wet' | 'mixed',
-      temperature: parseFloat(formData.temperature || "20"),
-      sectorTimes,
-      topSpeed: parseFloat(formData.topSpeed || "0"),
-      averageSpeed: (lapTimeMs > 0 ? (5000 / (lapTimeMs / 1000)) * 3.6 : 0) // Rough calculation for ~5km track
+        // Simple placeholder lap info for dashboard
+        const newLap: LapData = {
+          id: Date.now().toString(),
+          trackName: "Unknown Track",
+          carModel: "Unknown Car",
+          lapTime: 0,
+          dateRecorded: new Date(),
+          weather: "dry",
+          temperature: 20,
+          sectorTimes: [],
+          topSpeed: Math.max(...json.map((d) => d.speed)),
+          averageSpeed:
+            json.reduce((acc, d) => acc + d.speed, 0) / (json.length || 1),
+        };
+
+        onAddLap(newLap);
+      } catch (err) {
+        console.error("Error parsing telemetry JSON:", err);
+        alert("Invalid telemetry JSON file.");
+      }
     };
-
-    onAddLap(newLap);
-    
-    // Reset form
-    setFormData({
-      trackName: "",
-      carModel: "",
-      lapTime: "",
-      weather: "",
-      temperature: "",
-      topSpeed: "",
-      sector1: "",
-      sector2: "",
-      sector3: ""
-    });
+    reader.readAsText(file);
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.name.endsWith(".json")) handleFileUpload(file);
+  };
+
+  const handleBrowse = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFileUpload(file);
   };
 
   return (
@@ -77,136 +79,124 @@ export function LapUpload({ onAddLap }: LapUploadProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Upload className="h-5 w-5" />
-            Upload Lap Data
+            Upload DeltaSync Telemetry
           </CardTitle>
           <CardDescription>
-            Manually enter your lap data or upload from Assetto Corsa telemetry files
+            Drag & drop your <code>telemetry_log.json</code> file from Assetto Corsa
           </CardDescription>
         </CardHeader>
+
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="trackName">Track Name</Label>
-                <Input
-                  id="trackName"
-                  placeholder="e.g., Spa-Francorchamps"
-                  value={formData.trackName}
-                  onChange={(e) => handleInputChange("trackName", e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="carModel">Car Model</Label>
-                <Input
-                  id="carModel"
-                  placeholder="e.g., Ferrari 488 GT3"
-                  value={formData.carModel}
-                  onChange={(e) => handleInputChange("carModel", e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="lapTime">Lap Time (seconds)</Label>
-                <Input
-                  id="lapTime"
-                  type="number"
-                  step="0.001"
-                  placeholder="125.456"
-                  value={formData.lapTime}
-                  onChange={(e) => handleInputChange("lapTime", e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="weather">Weather</Label>
-                <Select onValueChange={(value) => handleInputChange("weather", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select weather" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="dry">Dry</SelectItem>
-                    <SelectItem value="wet">Wet</SelectItem>
-                    <SelectItem value="mixed">Mixed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="temperature">Temperature (°C)</Label>
-                <Input
-                  id="temperature"
-                  type="number"
-                  placeholder="20"
-                  value={formData.temperature}
-                  onChange={(e) => handleInputChange("temperature", e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="topSpeed">Top Speed (km/h)</Label>
-                <Input
-                  id="topSpeed"
-                  type="number"
-                  placeholder="280"
-                  value={formData.topSpeed}
-                  onChange={(e) => handleInputChange("topSpeed", e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Sector Times (seconds)</Label>
-              <div className="grid grid-cols-3 gap-2">
-                <Input
-                  placeholder="Sector 1"
-                  value={formData.sector1}
-                  onChange={(e) => handleInputChange("sector1", e.target.value)}
-                />
-                <Input
-                  placeholder="Sector 2"
-                  value={formData.sector2}
-                  onChange={(e) => handleInputChange("sector2", e.target.value)}
-                />
-                <Input
-                  placeholder="Sector 3"
-                  value={formData.sector3}
-                  onChange={(e) => handleInputChange("sector3", e.target.value)}
-                />
-              </div>
-            </div>
-
-            <Button type="submit" className="w-full">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Lap
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>File Upload</CardTitle>
-          <CardDescription>
-            Upload telemetry files directly from Assetto Corsa
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
+          {/* Upload Zone */}
+          <div
+            onDrop={handleDrop}
+            onDragOver={(e) => e.preventDefault()}
+            className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition"
+          >
             <Upload className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground mb-2">
-              Drag and drop your telemetry files here
+              Drag and drop your telemetry file here
             </p>
             <p className="text-sm text-muted-foreground mb-4">
-              Supports .json, .csv files from Assetto Corsa
+              or click below to browse
             </p>
-            <Button variant="outline">
-              Browse Files
-            </Button>
+            <input
+              type="file"
+              accept=".json"
+              className="hidden"
+              id="telemetryUpload"
+              onChange={handleBrowse}
+            />
+            <label htmlFor="telemetryUpload">
+              <Button variant="outline">Browse Files</Button>
+            </label>
           </div>
+
+          {/* File Info */}
+          {fileName && (
+            <p className="text-center mt-3 text-sm text-gray-400">
+              Loaded file: <span className="font-semibold">{fileName}</span>
+            </p>
+          )}
+
+          {/* Telemetry Table */}
+          {telemetry.length > 0 && (
+            <div className="mt-6 overflow-x-auto">
+              <table className="min-w-full text-sm text-left text-gray-200 border border-gray-700 rounded-lg">
+                <thead className="bg-gray-800 text-gray-100">
+                  <tr>
+                    <th className="px-4 py-2">#</th>
+                    <th className="px-4 py-2">Speed (km/h)</th>
+                    <th className="px-4 py-2">Gear</th>
+                    <th className="px-4 py-2">Throttle</th>
+                    <th className="px-4 py-2">Brake</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {telemetry.slice(0, 100).map((row, i) => (
+                    <tr
+                      key={i}
+                      className={`${
+                        i % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
+                      } hover:bg-gray-700`}
+                    >
+                      <td className="px-4 py-1">{i + 1}</td>
+                      <td className="px-4 py-1">{row.speed}</td>
+                      <td className="px-4 py-1">{row.gear}</td>
+                      <td className="px-4 py-1">
+                        {(row.throttle * 100).toFixed(0)}%
+                      </td>
+                      <td className="px-4 py-1">
+                        {(row.brake * 100).toFixed(0)}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {telemetry.length > 100 && (
+                <p className="text-gray-400 mt-2 text-xs italic text-center">
+                  Showing first 100 rows for performance.
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Telemetry Graph */}
+          {telemetry.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-lg font-semibold mb-3 text-center text-white">
+                Telemetry Graph
+              </h2>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={telemetry.slice(0, 500)}>
+                  <XAxis dataKey="speed" hide />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="speed"
+                    stroke="#38bdf8"
+                    dot={false}
+                    name="Speed (km/h)"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="throttle"
+                    stroke="#22c55e"
+                    dot={false}
+                    name="Throttle"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="brake"
+                    stroke="#ef4444"
+                    dot={false}
+                    name="Brake"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

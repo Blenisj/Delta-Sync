@@ -38,6 +38,10 @@ cd ..\backend
 npm install
 ```
 
+# Install for rechart (ensures visuals for the graphs works on the frontend and is compatible with how tailwind manages it)
+cd client
+npm install recharts
+
 ## 2) Run the dev server
 ```powershell
 cd client
