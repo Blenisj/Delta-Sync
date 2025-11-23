@@ -4,18 +4,18 @@ import json
 import os
 import time
 
+#path for the log file
 APP_NAME = "DeltaSync"
 LOG_FILE = os.path.join(os.path.dirname(__file__), "telemetry_log.json")
 
+#we'll store data in memory before writing
 telemetry_data = []
-lap_meta = {}
-last_sample_time = 0
-sample_interval = 0.25
+last_save_time = 0
+save_interval = 10  # seconds (yes it made alot of stuff in the JSON but it shall look sexy once we make a nice final output)
 
-current_lap = -1
-lap_start_time = 0
-lap_active = False
-distance_travelled = 0
+# Potential fix to reducing the JSON file size by 67 percent (siiiix seveennnnnnnnn)
+last_sample_time = 0
+sample_interval = .25  # seconds (10 samples per second)
 
 
 def acMain(ac_version):
@@ -27,102 +27,59 @@ def acMain(ac_version):
     speed_label = ac.addLabel(appWindow, "Speed: 0 km/h")
     ac.setPosition(speed_label, 10, 30)
 
-    # Initialize empty log file if not present
+    # create-o file-o if it doesn’t exist-o
     if not os.path.exists(LOG_FILE):
         with open(LOG_FILE, "w") as f:
             json.dump([], f, indent=2)
 
     return APP_NAME
 
-
 def acUpdate(deltaT):
-    global last_sample_time, current_lap, lap_start_time, lap_active, distance_travelled
+    global last_save_time, last_sample_time
 
+    # accumulate time
     last_sample_time += deltaT
+
+    # only log when enough time has passed
     if last_sample_time < sample_interval:
         return
     last_sample_time = 0
 
-    lap_count = ac.getCarState(0, acsys.CS.LapCount)
     speed = ac.getCarState(0, acsys.CS.SpeedKMH)
     gear = ac.getCarState(0, acsys.CS.Gear)
     throttle = ac.getCarState(0, acsys.CS.Gas)
     brake = ac.getCarState(0, acsys.CS.Brake)
-    norm_pos = ac.getCarState(0, acsys.CS.NormalizedSplinePosition)
-    distance_travelled += (speed / 3.6) * deltaT
 
-    # Detect new lap start
-    if lap_count != current_lap:
-        if lap_active:
-            # End previous lap
-            lap_time = time.time() - lap_start_time
-            lap_meta["lapTime"] = round(lap_time, 3)
-            lap_meta["distance"] = round(distance_travelled, 2)
 
-            # Sector breakdown
-            sectors = []
-            for i in range(1, 4):
-                sector_distance = distance_travelled / 3
-                sector_start = (i - 1) * sector_distance
-                sector_end = i * sector_distance
-                sector_data = [
-                    d for d in telemetry_data
-                    if sector_start <= d["distance"] <= sector_end
-                ]
-                avg_speed = (
-                    sum([d["speed"] for d in sector_data]) / len(sector_data)
-                    if sector_data else 0
-                )
-                sectors.append({
-                    "sector": i,
-                    "avgSpeed": round(avg_speed, 2)
-                })
-            lap_meta["sectors"] = sectors
+    # gear formatting (Initial-D type shi)
+    if gear == 0:
+        gear_text = "R"
+    elif gear == 1:
+        gear_text = "N"
+    else:
+        gear_text = str(gear - 1)
 
-            # Save to JSON
-            try:
-                with open(LOG_FILE, "w") as f:
-                    json.dump({
-                        "lapMeta": lap_meta,
-                        "telemetry": telemetry_data
-                    }, f, indent=2)
-            except Exception as e:
-                ac.log(f"DeltaSync save error: {e}")
-
-        # Start new lap
-        current_lap = lap_count
-        lap_start_time = time.time()
-        lap_active = True
-        distance_travelled = 0
-        telemetry_data.clear()
-        lap_meta.clear()
-        return
-
-    # Only log while lap is active
-    if lap_active:
-        distance_travelled += (speed / 3.6) * deltaT
-
-        # Determine gear text
-        if gear == 0:
-            gear_text = "R"
-        elif gear == 1:
-            gear_text = "N"
-        else:
-            gear_text = str(gear - 1)
-
-        ac.setText(
-            speed_label,
-            f"Spd:{speed:.0f} | G:{gear_text} | Th:{throttle:.0%} | Br:{brake:.0%}"
+    # update UI
+    ac.setText(
+        speed_label,
+        "Spd:{:.0f} | G:{} | Th:{:.0%} | Br:{:.0%}".format(
+            speed, gear_text, throttle, brake,
         )
+    )
 
-        # Log data with distance
-        telemetry_data.append({
-            "distance": round(distance_travelled, 2),
-            "speed": round(speed, 2),
-            "gear": gear_text,
-            "throttle": round(throttle, 3),
-            "brake": round(brake, 3),
-        })
+    # record telemetry data and become Fernando Alonso
+    telemetry_data.append({
+        "speed": round(speed, 2),
+        "gear": gear_text,
+        "throttle": round(throttle, 3),
+        "brake": round(brake, 3),
+    })
 
-def acShutdown():
-    ac.log("DeltaSync shutting down cleanly.")
+    # save every few seconds (in case of an AC crash, very common especially if you don't have CSP or some PP filter is fucking with ur AC config)
+    if time.time() - last_save_time > save_interval:
+        try:
+            with open(LOG_FILE, "w") as f:
+                json.dump(telemetry_data, f, indent=2)
+            last_save_time = time.time()
+        except Exception as e:
+            ac.log("DeltaSync error: {}".format(e))
