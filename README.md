@@ -18,6 +18,7 @@ npm -v
 Delta-Sync/
   client/               # React + Vite + Tailwind v4 app
   backend/              # optional (placeholder)
+  database/             # MongoDB functionality for React app
   package.json          # root (workspaces)
 ```
 
@@ -29,6 +30,12 @@ npm install
 
 # Then install inside client (ensures Vite and plugins are present locally)
 cd client
+npm install
+```
+
+Do this for the web database backend:
+```
+cd ..\database
 npm install
 ```
 
@@ -54,6 +61,14 @@ If you see “‘vite’ is not recognized”, you skipped “npm install” ins
 npm install
 npm run dev
 ```
+
+### 2.5) Run backend server
+To get MongoDB functionality working for the React app, run the following in a new powershell instance:
+```powershell
+cd database
+node connect.js
+```
+(NOTE: You'll need a user certificate in order to connect to the database, otherwise, you'll get an authentication error.)
 
 ## 3) Build and preview
 ```powershell
