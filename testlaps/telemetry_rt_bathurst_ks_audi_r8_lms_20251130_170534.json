@@ -1,0 +1,2897 @@
+{
+  "metadata": {
+    "car_name": "ks_audi_r8_lms", 
+    "last_save_timestamp": "2025-11-30 17:07:35", 
+    "best_lap_time_ms": 0, 
+    "track_name": "rt_bathurst", 
+    "samples_logged": 481
+  }, 
+  "telemetry": [
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 2.05, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.4, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.03, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.02, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.02, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.01, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.01, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.01, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.0, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.0, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 0.0, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 0.0, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 0.01, 
+      "throttle": 0.384
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 0.0, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 6.31, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 13.83, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 21.51, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 29.34, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 37.07, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 44.99, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 52.88, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 61.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 70.13, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 78.73, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 81.12, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 86.68, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 92.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 98.08, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 103.65, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 109.39, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 115.02, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 120.57, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 126.06, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 129.19, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 131.72, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 135.94, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 140.23, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 144.49, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 148.86, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 153.2, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 157.52, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 161.91, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 166.22, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 166.79, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 170.19, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 173.59, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 176.96, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 180.27, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 183.55, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 186.8, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.761, 
+      "gear": "4", 
+      "speed": 189.23, 
+      "throttle": 0.451
+    }, 
+    {
+      "brake": 0.545, 
+      "gear": "4", 
+      "speed": 175.43, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.451, 
+      "gear": "4", 
+      "speed": 169.02, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.639, 
+      "gear": "4", 
+      "speed": 159.59, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.561, 
+      "gear": "4", 
+      "speed": 149.61, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.388, 
+      "gear": "4", 
+      "speed": 141.74, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.565, 
+      "gear": "4", 
+      "speed": 132.4, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.667, 
+      "gear": "N", 
+      "speed": 123.03, 
+      "throttle": 0.5
+    }, 
+    {
+      "brake": 0.765, 
+      "gear": "3", 
+      "speed": 111.97, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.482, 
+      "gear": "3", 
+      "speed": 102.19, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.098, 
+      "gear": "N", 
+      "speed": 96.68, 
+      "throttle": 0.191
+    }, 
+    {
+      "brake": 0.173, 
+      "gear": "2", 
+      "speed": 94.09, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.047, 
+      "gear": "2", 
+      "speed": 91.06, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 88.56, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 86.72, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 85.43, 
+      "throttle": 0.208
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 86.2, 
+      "throttle": 0.451
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 88.46, 
+      "throttle": 0.506
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 91.53, 
+      "throttle": 0.769
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 95.4, 
+      "throttle": 0.784
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 100.18, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 105.37, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 110.52, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 115.63, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 120.74, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 125.77, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 126.46, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 130.03, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 133.84, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 137.58, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 141.35, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 145.15, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 148.88, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 152.7, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 156.39, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 160.07, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 163.79, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 165.9, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 167.37, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 170.31, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 173.21, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 176.09, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 178.91, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 181.73, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 184.49, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 187.22, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 189.84, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 192.47, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 195.01, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 197.48, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 199.91, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 202.12, 
+      "throttle": 0.349
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "4", 
+      "speed": 193.16, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.576, 
+      "gear": "4", 
+      "speed": 182.18, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.596, 
+      "gear": "4", 
+      "speed": 171.64, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.914, 
+      "gear": "4", 
+      "speed": 159.27, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.455, 
+      "gear": "4", 
+      "speed": 147.8, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.71, 
+      "gear": "4", 
+      "speed": 137.52, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.616, 
+      "gear": "4", 
+      "speed": 127.13, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.557, 
+      "gear": "3", 
+      "speed": 118.17, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.459, 
+      "gear": "3", 
+      "speed": 109.7, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.459, 
+      "gear": "3", 
+      "speed": 101.75, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 95.37, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 92.66, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 92.52, 
+      "throttle": 0.467
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 94.64, 
+      "throttle": 0.545
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 97.1, 
+      "throttle": 0.608
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 99.74, 
+      "throttle": 0.635
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 102.41, 
+      "throttle": 0.659
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 105.36, 
+      "throttle": 0.694
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 109.28, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 114.41, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 119.62, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 124.77, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 128.72, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 129.92, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 133.79, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 137.48, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 141.32, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 145.01, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 148.84, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 152.48, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 156.17, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 159.74, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 163.13, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 165.88, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 165.99, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 168.46, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 170.88, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 173.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 175.81, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 178.16, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 180.52, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 182.85, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 185.16, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 187.48, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 189.69, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 191.91, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 194.1, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 196.19, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 198.4, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 200.47, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 202.51, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 204.6, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 206.44, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 208.48, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 209.0, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 208.38, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 209.75, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 211.19, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 212.64, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 214.04, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 215.39, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 216.77, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 218.12, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 219.42, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 220.61, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 221.81, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 222.95, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 224.07, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 225.24, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 226.5, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 227.77, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 229.0, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 230.74, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 232.79, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 234.58, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 236.06, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 237.23, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 239.13, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 240.52, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 241.82, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 243.05, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 244.19, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 245.23, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 246.06, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 246.81, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 247.53, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "5", 
+      "speed": 248.22, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.341, 
+      "gear": "5", 
+      "speed": 248.46, 
+      "throttle": 0.09
+    }, 
+    {
+      "brake": 0.686, 
+      "gear": "5", 
+      "speed": 234.39, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.616, 
+      "gear": "5", 
+      "speed": 221.58, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.631, 
+      "gear": "5", 
+      "speed": 209.78, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.459, 
+      "gear": "5", 
+      "speed": 196.72, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.784, 
+      "gear": "5", 
+      "speed": 186.9, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.718, 
+      "gear": "5", 
+      "speed": 173.15, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.569, 
+      "gear": "5", 
+      "speed": 161.75, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.51, 
+      "gear": "5", 
+      "speed": 152.08, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.22, 
+      "gear": "N", 
+      "speed": 143.85, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.306, 
+      "gear": "4", 
+      "speed": 136.37, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.243, 
+      "gear": "4", 
+      "speed": 128.84, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 123.39, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 119.53, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 115.68, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 100.85, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 90.6, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 86.8, 
+      "throttle": 0.812
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 89.14, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 91.83, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 91.57, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 95.69, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 99.85, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 104.18, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 107.78, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 111.42, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 115.82, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 120.08, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 124.05, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 126.53, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 126.65, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 129.49, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 132.25, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 135.1, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 137.93, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 140.68, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 143.44, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 146.22, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 148.91, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 151.6, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 154.18, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 156.73, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 159.26, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 161.71, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 164.15, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 165.8, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 164.98, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 166.41, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 167.85, 
+      "throttle": 0.71
+    }, 
+    {
+      "brake": 0.345, 
+      "gear": "4", 
+      "speed": 161.82, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 158.11, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.482, 
+      "gear": "4", 
+      "speed": 152.81, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.153, 
+      "gear": "4", 
+      "speed": 147.51, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 143.49, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 140.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 141.32, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 142.65, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 143.75, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.427, 
+      "gear": "4", 
+      "speed": 140.68, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.384, 
+      "gear": "4", 
+      "speed": 134.14, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.227, 
+      "gear": "4", 
+      "speed": 127.24, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.482, 
+      "gear": "N", 
+      "speed": 120.02, 
+      "throttle": 0.027
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 114.64, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 110.72, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.173, 
+      "gear": "3", 
+      "speed": 104.89, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.035, 
+      "gear": "3", 
+      "speed": 98.33, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.412, 
+      "gear": "2", 
+      "speed": 91.48, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 85.93, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 81.4, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 78.36, 
+      "throttle": 0.541
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 78.76, 
+      "throttle": 0.671
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 79.54, 
+      "throttle": 0.784
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 81.09, 
+      "throttle": 0.996
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 83.02, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 85.59, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 89.73, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 94.1, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 98.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 102.6, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 106.48, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 110.64, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 114.79, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 118.93, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 122.9, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 123.92, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 125.66, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 128.87, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 131.89, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 134.1, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 136.63, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 139.34, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 142.4, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 145.57, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 148.65, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 151.49, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 154.28, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 156.9, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 159.4, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 161.83, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 164.21, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 165.39, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 164.45, 
+      "throttle": 0.427
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 161.96, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 158.17, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 154.03, 
+      "throttle": 0.494
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 154.23, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 154.6, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 151.31, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 150.18, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 151.45, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 153.22, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 154.92, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 156.71, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 158.5, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 160.45, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 162.19, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 164.01, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 166.03, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 168.28, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 170.58, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 172.76, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 175.02, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 177.34, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 179.65, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 182.13, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 184.74, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 187.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 190.07, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 192.5, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 194.62, 
+      "throttle": 0.671
+    }, 
+    {
+      "brake": 0.224, 
+      "gear": "4", 
+      "speed": 191.34, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 187.55, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.349, 
+      "gear": "4", 
+      "speed": 184.49, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.216, 
+      "gear": "4", 
+      "speed": 174.93, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 171.16, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 168.07, 
+      "throttle": 0.722
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 169.01, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 170.57, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 171.06, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 171.8, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 173.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 175.24, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 177.11, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 179.22, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 181.29, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 183.34, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 185.3, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 187.13, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 188.97, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 190.82, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 192.68, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 194.74, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 196.95, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 199.0, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.231, 
+      "gear": "4", 
+      "speed": 197.07, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 191.86, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.314, 
+      "gear": "4", 
+      "speed": 188.98, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.18, 
+      "gear": "4", 
+      "speed": 180.6, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 175.93, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 172.0, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 170.3, 
+      "throttle": 0.992
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 171.45, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 173.1, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 174.64, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 176.23, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 178.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 180.61, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 182.92, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 185.14, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 187.18, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 189.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 191.57, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 193.79, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 195.73, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 197.78, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 199.84, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 201.79, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.533, 
+      "gear": "4", 
+      "speed": 198.03, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.486, 
+      "gear": "4", 
+      "speed": 188.32, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 185.24, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 183.3, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 181.38, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 179.74, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.29, 
+      "gear": "4", 
+      "speed": 177.48, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.38, 
+      "gear": "4", 
+      "speed": 170.82, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.545, 
+      "gear": "4", 
+      "speed": 164.04, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.69, 
+      "gear": "4", 
+      "speed": 154.5, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.694, 
+      "gear": "4", 
+      "speed": 144.9, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.369, 
+      "gear": "4", 
+      "speed": 137.57, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 134.32, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "4", 
+      "speed": 132.15, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.306, 
+      "gear": "4", 
+      "speed": 130.47, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.584, 
+      "gear": "N", 
+      "speed": 122.94, 
+      "throttle": 0.5
+    }, 
+    {
+      "brake": 0.655, 
+      "gear": "3", 
+      "speed": 114.49, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.412, 
+      "gear": "3", 
+      "speed": 105.6, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.302, 
+      "gear": "3", 
+      "speed": 101.44, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 98.44, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 98.49, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 102.25, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 106.86, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 108.89, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 107.19, 
+      "throttle": 0.365
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 110.36, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 112.6, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.718, 
+      "gear": "3", 
+      "speed": 105.86, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.702, 
+      "gear": "N", 
+      "speed": 98.0, 
+      "throttle": 0.082
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 94.9, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 93.49, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 90.41, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 87.46, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 87.14, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 92.02, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 96.61, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 100.35, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 99.47, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 103.54, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 105.43, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 106.9, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 104.81, 
+      "throttle": 0.937
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 107.07, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 99.62, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 101.47, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 106.45, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 110.49, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 114.12, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 113.9, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 116.61, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 117.39, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 114.92, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 113.97, 
+      "throttle": 0.275
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 117.18, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 120.68, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 124.04, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 128.14, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 130.8, 
+      "throttle": 0.557
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 134.17, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 138.42, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 138.61, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 140.52, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 144.05, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 147.56, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 151.49, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 155.21, 
+      "throttle": 0.898
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "3", 
+      "speed": 155.39, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.349, 
+      "gear": "3", 
+      "speed": 153.27, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.71, 
+      "gear": "3", 
+      "speed": 146.34, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.745, 
+      "gear": "3", 
+      "speed": 137.7, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "3", 
+      "speed": 129.45, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 1.0, 
+      "gear": "N", 
+      "speed": 121.51, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.847, 
+      "gear": "2", 
+      "speed": 108.81, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.553, 
+      "gear": "2", 
+      "speed": 100.83, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.392, 
+      "gear": "2", 
+      "speed": 93.04, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.09, 
+      "gear": "2", 
+      "speed": 88.46, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.075, 
+      "gear": "2", 
+      "speed": 84.03, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.475, 
+      "gear": "2", 
+      "speed": 78.18, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.529, 
+      "gear": "2", 
+      "speed": 71.01, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 43.62, 
+      "throttle": 0.839
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 42.19, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 37.36, 
+      "throttle": 0.396
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 42.12, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 44.82, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 44.42, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 48.49, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 56.69, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 65.91, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 74.25, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 78.88, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 79.22, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 81.59, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 84.88, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 84.2, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 86.14, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 90.95, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 96.13, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 98.44, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 97.04, 
+      "throttle": 0.969
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 98.63, 
+      "throttle": 1.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 101.08, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 100.05, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 97.65, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 94.47, 
+      "throttle": 0.039
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 92.44, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 88.68, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 85.21, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 81.88, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 77.77, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 72.86, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 67.2, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "2", 
+      "speed": 61.34, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "N", 
+      "speed": 30.75, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 28.65, 
+      "throttle": 0.0
+    }, 
+    {
+      "brake": 0.0, 
+      "gear": "1", 
+      "speed": 28.65, 
+      "throttle": 0.0
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "best_lap_time_ms": 0, 
+    "car_name": "ks_ferrari_sf70h", 
+    "track_name": "ks_brands_hatch", 
+    "last_save_timestamp": "2025-11-30 22:21:15", 
+    "samples_logged": 1
+  }, 
+  "telemetry": [
+    {
+      "brake": 1.0, 
+      "throttle": 0.0, 
+      "gear": "N", 
+      "speed": 0.54
+    }
+  ]
+}

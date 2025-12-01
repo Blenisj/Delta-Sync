@@ -26,39 +26,65 @@ export function LapUpload({ onAddLap }: LapUploadProps) {
   const [telemetry, setTelemetry] = useState<any[]>([]);
   const [fileName, setFileName] = useState<string>("");
 
-  // Parse telemetry JSON
+  const parseTelemetryFile = (json: any) => {
+    // NEW FORMAT: { metadata, telemetry }
+    if (json && Array.isArray(json.telemetry)) {
+      localStorage.setItem(
+        "lastUploadedTelemetry",
+        JSON.stringify(json.telemetry)
+      );
+      localStorage.setItem(
+        "lastUploadedTelemetryMeta",
+        JSON.stringify(json.metadata || {})
+      );
+      return json.telemetry;
+    }
+
+    // OLD FORMAT: pure array
+    if (Array.isArray(json)) {
+      localStorage.setItem("lastUploadedTelemetry", JSON.stringify(json));
+      localStorage.removeItem("lastUploadedTelemetryMeta");
+      return json;
+    }
+
+    throw new Error("Invalid telemetry format");
+  };
+
   const handleFileUpload = (file: File) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const json = JSON.parse(e.target?.result as string);
-        if (!Array.isArray(json)) throw new Error("Invalid telemetry JSON format");
 
-        setTelemetry(json);
-        localStorage.setItem("lastUploadedTelemetry", JSON.stringify(json));
+        const parsedTelemetry = parseTelemetryFile(json);
+        setTelemetry(parsedTelemetry);
         setFileName(file.name);
 
-        // Simple placeholder lap info for dashboard
+        const maxSpeed = Math.max(...parsedTelemetry.map((d) => d.speed));
+        const avgSpeed =
+          parsedTelemetry.reduce((acc, d) => acc + d.speed, 0) /
+          (parsedTelemetry.length || 1);
+
         const newLap: LapData = {
           id: Date.now().toString(),
-          trackName: "Unknown Track",
-          carModel: "Unknown Car",
-          lapTime: 0,
+          trackName: json?.metadata?.track_name || "Unknown Track",
+          carModel: json?.metadata?.car_name || "Unknown Car",
+          lapTime: json?.metadata?.best_lap_time_ms || 0,
           dateRecorded: new Date(),
           weather: "dry",
           temperature: 20,
           sectorTimes: [],
-          topSpeed: Math.max(...json.map((d) => d.speed)),
-          averageSpeed:
-            json.reduce((acc, d) => acc + d.speed, 0) / (json.length || 1),
+          topSpeed: maxSpeed,
+          averageSpeed: avgSpeed,
         };
 
         onAddLap(newLap);
       } catch (err) {
-        console.error("Error parsing telemetry JSON:", err);
+        console.error("Error parsing telemetry file:", err);
         alert("Invalid telemetry JSON file.");
       }
     };
+
     reader.readAsText(file);
   };
 
@@ -82,7 +108,7 @@ export function LapUpload({ onAddLap }: LapUploadProps) {
             Upload DeltaSync Telemetry
           </CardTitle>
           <CardDescription>
-            Drag & drop your <code>telemetry_log.json</code> file from Assetto Corsa
+            Drag & drop your telemetry JSON file from Assetto Corsa
           </CardDescription>
         </CardHeader>
 
@@ -100,6 +126,7 @@ export function LapUpload({ onAddLap }: LapUploadProps) {
             <p className="text-sm text-muted-foreground mb-4">
               or click below to browse
             </p>
+
             <input
               type="file"
               accept=".json"
@@ -126,7 +153,7 @@ export function LapUpload({ onAddLap }: LapUploadProps) {
                 <thead className="bg-gray-800 text-gray-100">
                   <tr>
                     <th className="px-4 py-2">#</th>
-                    <th className="px-4 py-2">Speed (km/h)</th>
+                    <th className="px-4 py-2">Speed</th>
                     <th className="px-4 py-2">Gear</th>
                     <th className="px-4 py-2">Throttle</th>
                     <th className="px-4 py-2">Brake</th>
@@ -153,9 +180,10 @@ export function LapUpload({ onAddLap }: LapUploadProps) {
                   ))}
                 </tbody>
               </table>
+
               {telemetry.length > 100 && (
                 <p className="text-gray-400 mt-2 text-xs italic text-center">
-                  Showing first 100 rows for performance.
+                  Showing first 100 samples…
                 </p>
               )}
             </div>

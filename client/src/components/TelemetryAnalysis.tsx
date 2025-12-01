@@ -1,3 +1,4 @@
+import { TelemetryMetadata } from "./TelemetryMetadata";
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
@@ -50,6 +51,7 @@ export function TelemetryAnalysis() {
 
   return (
     <div className="space-y-6">
+      <TelemetryMetadata />
       <Card>
         <CardHeader>
           <CardTitle>Telemetry Analysis</CardTitle>
