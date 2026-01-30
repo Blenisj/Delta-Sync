@@ -16,6 +16,7 @@ import { LapComparison } from "./components/LapComparison";
 import { TelemetryAnalysis } from "./components/TelemetryAnalysis";
 import { Leaderboard } from "./components/Leaderboard";
 import type { LapData } from "./types/racing";
+import { seedLaps } from "./data/seedLaps";
 import {
   BarChart3,
   Upload,
@@ -50,24 +51,14 @@ export default function App() {
         ...lap,
         dateRecorded: new Date(lap.dateRecorded),
       }));
-      setLaps(lapsWithDates);
+
+      const byId = new Map<string, LapData>();
+      seedLaps.forEach((lap) => byId.set(lap.id, lap));
+      lapsWithDates.forEach((lap: LapData) => byId.set(lap.id, lap));
+
+      setLaps(Array.from(byId.values()));
     } else {
-      // fallback demo laps
-      const sampleLaps: LapData[] = [
-        {
-          id: "1",
-          trackName: "Spa-Francorchamps",
-          carModel: "Ferrari 488 GT3",
-          lapTime: 125456,
-          dateRecorded: new Date(Date.now() - 86400000 * 2),
-          weather: "dry",
-          temperature: 22,
-          sectorTimes: [42150, 41200, 42106],
-          topSpeed: 285,
-          averageSpeed: 142.8,
-        },
-      ];
-      setLaps(sampleLaps);
+      setLaps(seedLaps);
     }
   }, []);
 
@@ -77,11 +68,21 @@ export default function App() {
   }, [laps]);
 
   //  Modified to also handle telemetry JSON
-  const handleAddLap = (newLap: LapData, telemetryData?: any[]) => {
+  const handleAddLap = (newLap: LapData, telemetryData?: any[], telemetryMeta?: any) => {
     setLaps((prevLaps) => [...prevLaps, newLap]);
+
     if (telemetryData && telemetryData.length > 0) {
       setLastUploadedTelemetry(telemetryData);
+
+      const existing = JSON.parse(localStorage.getItem("telemetryByLapId") || "{}");
+      existing[newLap.id] = telemetryData;
+      localStorage.setItem("telemetryByLapId", JSON.stringify(existing));
+
+      const metaExisting = JSON.parse(localStorage.getItem("telemetryMetaByLapId") || "{}");
+      metaExisting[newLap.id] = telemetryMeta || {};
+      localStorage.setItem("telemetryMetaByLapId", JSON.stringify(metaExisting));
     }
+
     setUploadDialogOpen(false);
   };
 

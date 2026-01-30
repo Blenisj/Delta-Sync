@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 interface TelemetryMeta {
   car_name?: string;
   track_name?: string;
-  best_lap_time_ms?: number | null;
+  best_lap_time_ms?: number;
   samples_logged?: number;
   last_save_timestamp?: string;
 }
@@ -19,26 +19,29 @@ function formatLapTime(ms?: number | null): string {
   return `${minutes}:${seconds.toFixed(3).padStart(6, "0")}`;
 }
 
-export function TelemetryMetadata() {
-  const [meta, setMeta] = useState<TelemetryMeta | null>(null);
+export function TelemetryMetadata({ meta }: { meta?: TelemetryMeta | null }) {
+  const [storedMeta, setStoredMeta] = useState<TelemetryMeta | null>(null);
 
   useEffect(() => {
+    if (meta) return;
     try {
       const savedMeta = localStorage.getItem("lastUploadedTelemetryMeta");
       if (!savedMeta) {
-        setMeta(null);
+        setStoredMeta(null);
         return;
       }
       const parsed: TelemetryMeta = JSON.parse(savedMeta);
-      setMeta(parsed);
+      setStoredMeta(parsed);
     } catch (err) {
       console.error("Failed to load telemetry metadata:", err);
-      setMeta(null);
+      setStoredMeta(null);
     }
-  }, []);
+  }, [meta]);
+
+  const activeMeta = meta ?? storedMeta;
 
   // If no metadata has been stored yet, don't render anything
-  if (!meta) return null;
+  if (!activeMeta) return null;
 
   return (
     <Card className="mb-4">
@@ -48,26 +51,26 @@ export function TelemetryMetadata() {
       <CardContent className="text-sm text-muted-foreground space-y-1">
         <p>
           <span className="font-medium text-foreground">Car:</span>{" "}
-          {meta.car_name || "Unknown"}
+          {activeMeta.car_name || "Unknown"}
         </p>
         <p>
           <span className="font-medium text-foreground">Track:</span>{" "}
-          {meta.track_name || "Unknown"}
+          {activeMeta.track_name || "Unknown"}
         </p>
         <p>
           <span className="font-medium text-foreground">Best Lap:</span>{" "}
-          {formatLapTime(meta.best_lap_time_ms)}
+          {formatLapTime(activeMeta.best_lap_time_ms)}
         </p>
-        {typeof meta.samples_logged === "number" && (
+        {typeof activeMeta.samples_logged === "number" && (
           <p>
             <span className="font-medium text-foreground">Samples:</span>{" "}
-            {meta.samples_logged}
+            {activeMeta.samples_logged}
           </p>
         )}
-        {meta.last_save_timestamp && (
+        {activeMeta.last_save_timestamp && (
           <p>
             <span className="font-medium text-foreground">Logged at:</span>{" "}
-            {meta.last_save_timestamp}
+            {activeMeta.last_save_timestamp}
           </p>
         )}
       </CardContent>

@@ -3,235 +3,119 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Progress } from "./ui/progress";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
-import { TrendingDown, TrendingUp, Clock, AlertCircle, Target, Users, Zap, Trophy, Brain, Gauge } from "lucide-react";
-import type { LapData, ComparisonAnalysis } from "../types/racing";
-import { GitCompare } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { TrendingDown, TrendingUp, Clock, AlertCircle, Target, GitCompare, MapPin, Activity } from "lucide-react";
+import type { LapData } from "../types/racing";
+import { seedTelemetryById, seedTelemetryMetaById } from "../data/seedLaps";
+import {
+  getBrakingSeries,
+  getGasSeries,
+  getGearSeries,
+  getDeltaTimeSeries,
+  type TelemetrySample,
+  type TelemetryMeta,
+} from "../telemetry";
 
 interface LapComparisonProps {
   laps: LapData[];
 }
 
-interface FasterDriverData extends LapData {
-  driverName: string;
-  driverInitials: string;
-  skillLevel: "Pro" | "Semi-Pro" | "Advanced";
-}
-
-interface TrendAnalysis {
-  category: string;
-  userAverage: number;
-  fasterDriversAverage: number;
-  improvement: number;
-  confidence: number;
-  description: string;
-  actionableAdvice: string;
-}
-
-interface PerformanceGap {
-  metric: string;
-  userValue: number;
-  topDriversValue: number;
-  gap: number;
-  impactLevel: "High" | "Medium" | "Low";
-  priority: number;
-}
-
 export function LapComparison({ laps }: LapComparisonProps) {
+  const [selectedTrack, setSelectedTrack] = useState<string>("");
   const [selectedLap1, setSelectedLap1] = useState<string>("");
   const [selectedLap2, setSelectedLap2] = useState<string>("");
-  const [selectedTrack, setSelectedTrack] = useState<string>("all");
-  const [selectedCar, setSelectedCar] = useState<string>("all");
+  const [selectedTelemetryType, setSelectedTelemetryType] = useState<string>("throttle-brake");
 
-  const lap1 = laps.find(lap => lap.id === selectedLap1);
-  const lap2 = laps.find(lap => lap.id === selectedLap2);
+  // Get unique tracks from laps
+  const uniqueTracks = useMemo(() => {
+    const tracks = [...new Set(laps.map(lap => lap.trackName))];
+    return tracks.sort();
+  }, [laps]);
 
-  // Generate mock faster driver data
-  const generateFasterDriversData = (): FasterDriverData[] => {
-    const driverProfiles = [
-      { name: "Lewis Hamilton", initials: "LH", skill: "Pro" as const },
-      { name: "Max Verstappen", initials: "MV", skill: "Pro" as const },
-      { name: "Charles Leclerc", initials: "CL", skill: "Pro" as const },
-      { name: "Lando Norris", initials: "LN", skill: "Semi-Pro" as const },
-      { name: "George Russell", initials: "GR", skill: "Semi-Pro" as const },
-      { name: "Carlos Sainz", initials: "CS", skill: "Semi-Pro" as const },
-      { name: "Oscar Piastri", initials: "OP", skill: "Advanced" as const },
-      { name: "Alexander Albon", initials: "AA", skill: "Advanced" as const },
-    ];
+  // Filter laps by selected track
+  const trackLaps = useMemo(() => {
+    if (!selectedTrack) return [];
+    return laps.filter(lap => lap.trackName === selectedTrack);
+  }, [laps, selectedTrack]);
 
-    const tracks = ["Spa-Francorchamps", "Monza", "Silverstone", "Suzuka", "Brands Hatch", "Nürburgring"];
-    const cars = ["Ferrari 488 GT3", "McLaren 720S GT3", "Porsche 991 GT3 R", "BMW M6 GT3", "Audi R8 LMS", "Mercedes AMG GT3"];
-    
-    const fasterDrivers: FasterDriverData[] = [];
+  const lap1 = trackLaps.find(lap => lap.id === selectedLap1);
+  const lap2 = trackLaps.find(lap => lap.id === selectedLap2);
 
-    for (let i = 0; i < 30; i++) {
-      const track = tracks[Math.floor(Math.random() * tracks.length)];
-      const car = cars[Math.floor(Math.random() * cars.length)];
-      const driver = driverProfiles[Math.floor(Math.random() * driverProfiles.length)];
-      
-      // Generate faster lap times (these drivers are better than the user)
-      let baseLapTime = 120000;
-      switch (track) {
-        case "Monza":
-          baseLapTime = 90000 + Math.random() * 5000; // 1:30-1:35 (faster than user)
-          break;
-        case "Spa-Francorchamps":
-          baseLapTime = 115000 + Math.random() * 8000; // 1:55-2:03 (faster than user)
-          break;
-        case "Silverstone":
-          baseLapTime = 105000 + Math.random() * 5000; // 1:45-1:50
-          break;
-        case "Suzuka":
-          baseLapTime = 103000 + Math.random() * 5000; // 1:43-1:48
-          break;
-        case "Brands Hatch":
-          baseLapTime = 75000 + Math.random() * 3000; // 1:15-1:18
-          break;
-        case "Nürburgring":
-          baseLapTime = 450000 + Math.random() * 20000; // 7:30-7:50
-          break;
-      }
+  // Load telemetry data for selected laps
+  const telemetry1 = useMemo(() => {
+    if (!lap1) return [];
+    const stored = JSON.parse(localStorage.getItem("telemetryByLapId") || "{}");
+    return stored[lap1.id] || seedTelemetryById[lap1.id] || [];
+  }, [lap1]);
 
-      const lapTime = Math.floor(baseLapTime);
-      const sectorTimes = [
-        Math.floor(lapTime * 0.32), // Slightly more optimized distribution
-        Math.floor(lapTime * 0.33),
-        Math.floor(lapTime * 0.35)
-      ];
+  const telemetry2 = useMemo(() => {
+    if (!lap2) return [];
+    const stored = JSON.parse(localStorage.getItem("telemetryByLapId") || "{}");
+    return stored[lap2.id] || seedTelemetryById[lap2.id] || [];
+  }, [lap2]);
 
-      fasterDrivers.push({
-        id: `faster-${i}`,
-        trackName: track,
-        carModel: car,
-        lapTime,
-        dateRecorded: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
-        weather: Math.random() > 0.8 ? "wet" : "dry",
-        temperature: Math.floor(Math.random() * 20) + 15,
-        sectorTimes,
-        topSpeed: Math.floor(Math.random() * 40) + 270, // Higher top speeds
-        averageSpeed: Math.floor(Math.random() * 25) + 155, // Higher average speeds
-        driverName: driver.name,
-        driverInitials: driver.initials,
-        skillLevel: driver.skill
-      });
-    }
+  const meta1 = useMemo(() => {
+    if (!lap1) return null;
+    const storedMeta = JSON.parse(localStorage.getItem("telemetryMetaByLapId") || "{}");
+    return storedMeta[lap1.id] || seedTelemetryMetaById[lap1.id] || null;
+  }, [lap1]);
 
-    return fasterDrivers;
-  };
+  const meta2 = useMemo(() => {
+    if (!lap2) return null;
+    const storedMeta = JSON.parse(localStorage.getItem("telemetryMetaByLapId") || "{}");
+    return storedMeta[lap2.id] || seedTelemetryMetaById[lap2.id] || null;
+  }, [lap2]);
 
-  const fasterDriversData = useMemo(() => generateFasterDriversData(), []);
+  // Compute telemetry series for comparison
+  const braking1 = useMemo(() => getBrakingSeries(telemetry1), [telemetry1]);
+  const braking2 = useMemo(() => getBrakingSeries(telemetry2), [telemetry2]);
+  const gas1 = useMemo(() => getGasSeries(telemetry1), [telemetry1]);
+  const gas2 = useMemo(() => getGasSeries(telemetry2), [telemetry2]);
+  const gear1 = useMemo(() => getGearSeries(telemetry1), [telemetry1]);
+  const gear2 = useMemo(() => getGearSeries(telemetry2), [telemetry2]);
+  const delta1 = useMemo(() => getDeltaTimeSeries(telemetry1, meta1 ?? undefined), [telemetry1, meta1]);
+  const delta2 = useMemo(() => getDeltaTimeSeries(telemetry2, meta2 ?? undefined), [telemetry2, meta2]);
 
-  // Filter user's laps and faster drivers by track/car
-  const getFilteredLaps = (lapsToFilter: LapData[]) => {
-    let filtered = lapsToFilter;
-    if (selectedTrack !== "all") {
-      filtered = filtered.filter(lap => lap.trackName === selectedTrack);
-    }
-    if (selectedCar !== "all") {
-      filtered = filtered.filter(lap => lap.carModel === selectedCar);
-    }
-    return filtered;
-  };
-
-  const filteredUserLaps = getFilteredLaps(laps);
-  const filteredFasterDrivers = getFilteredLaps(fasterDriversData);
-
-  // Analyze trends between user and faster drivers
-  const getTrendAnalysis = (): TrendAnalysis[] => {
-    if (filteredUserLaps.length === 0 || filteredFasterDrivers.length === 0) return [];
-
-    const userAvgLapTime = filteredUserLaps.reduce((sum, lap) => sum + lap.lapTime, 0) / filteredUserLaps.length;
-    const fasterAvgLapTime = filteredFasterDrivers.reduce((sum, lap) => sum + lap.lapTime, 0) / filteredFasterDrivers.length;
-
-    const userAvgTopSpeed = filteredUserLaps.reduce((sum, lap) => sum + lap.topSpeed, 0) / filteredUserLaps.length;
-    const fasterAvgTopSpeed = filteredFasterDrivers.reduce((sum, lap) => sum + lap.topSpeed, 0) / filteredFasterDrivers.length;
-
-    const userAvgSpeed = filteredUserLaps.reduce((sum, lap) => sum + lap.averageSpeed, 0) / filteredUserLaps.length;
-    const fasterAvgSpeed = filteredFasterDrivers.reduce((sum, lap) => sum + lap.averageSpeed, 0) / filteredFasterDrivers.length;
-
-    // Sector analysis
-    const userSector1Avg = filteredUserLaps.reduce((sum, lap) => sum + lap.sectorTimes[0], 0) / filteredUserLaps.length;
-    const fasterSector1Avg = filteredFasterDrivers.reduce((sum, lap) => sum + lap.sectorTimes[0], 0) / filteredFasterDrivers.length;
-
-    const userSector2Avg = filteredUserLaps.reduce((sum, lap) => sum + lap.sectorTimes[1], 0) / filteredUserLaps.length;
-    const fasterSector2Avg = filteredFasterDrivers.reduce((sum, lap) => sum + lap.sectorTimes[1], 0) / filteredFasterDrivers.length;
-
-    const userSector3Avg = filteredUserLaps.reduce((sum, lap) => sum + lap.sectorTimes[2], 0) / filteredUserLaps.length;
-    const fasterSector3Avg = filteredFasterDrivers.reduce((sum, lap) => sum + lap.sectorTimes[2], 0) / filteredFasterDrivers.length;
-
-    return [
-      {
-        category: "Overall Lap Time",
-        userAverage: userAvgLapTime,
-        fasterDriversAverage: fasterAvgLapTime,
-        improvement: userAvgLapTime - fasterAvgLapTime,
-        confidence: 95,
-        description: "Time difference compared to faster drivers",
-        actionableAdvice: "Focus on the most impactful sectors and cornering consistency"
-      },
-      {
-        category: "Sector 1 Performance",
-        userAverage: userSector1Avg,
-        fasterDriversAverage: fasterSector1Avg,
-        improvement: userSector1Avg - fasterSector1Avg,
-        confidence: 88,
-        description: "First sector contains mainly straights and high-speed corners",
-        actionableAdvice: "Work on early braking points and entry speed optimization"
-      },
-      {
-        category: "Sector 2 Performance", 
-        userAverage: userSector2Avg,
-        fasterDriversAverage: fasterSector2Avg,
-        improvement: userSector2Avg - fasterSector2Avg,
-        confidence: 91,
-        description: "Technical middle sector with tight corners",
-        actionableAdvice: "Focus on maintaining speed through technical sections and smoother inputs"
-      },
-      {
-        category: "Sector 3 Performance",
-        userAverage: userSector3Avg,
-        fasterDriversAverage: fasterSector3Avg,
-        improvement: userSector3Avg - fasterSector3Avg,
-        confidence: 87,
-        description: "Final sector emphasizes exit speed and acceleration",
-        actionableAdvice: "Improve corner exit technique and throttle application timing"
-      },
-      {
-        category: "Top Speed",
-        userAverage: userAvgTopSpeed,
-        fasterDriversAverage: fasterAvgTopSpeed,
-        improvement: fasterAvgTopSpeed - userAvgTopSpeed,
-        confidence: 78,
-        description: "Maximum speed achieved during the lap",
-        actionableAdvice: "Optimize slipstream usage and aerodynamic setup for straights"
-      },
-      {
-        category: "Average Speed",
-        userAverage: userAvgSpeed,
-        fasterDriversAverage: fasterAvgSpeed,
-        improvement: fasterAvgSpeed - userAvgSpeed,
-        confidence: 92,
-        description: "Overall speed efficiency throughout the lap",
-        actionableAdvice: "Focus on carrying more speed through corners and reducing time lost in slower sections"
-      }
-    ];
-  };
-
-  const getPerformanceGaps = (): PerformanceGap[] => {
-    const trends = getTrendAnalysis();
-    if (trends.length === 0) return [];
-
-    return trends.map((trend, index) => ({
-      metric: trend.category,
-      userValue: trend.userAverage,
-      topDriversValue: trend.fasterDriversAverage,
-      gap: Math.abs(trend.improvement),
-      impactLevel: trend.improvement > 1000 ? "High" : trend.improvement > 500 ? "Medium" : "Low",
-      priority: index + 1
+  // Prepare comparison data for charts
+  const throttleBrakeComparison = useMemo(() => {
+    const maxLength = Math.max(gas1.length, gas2.length, braking1.length, braking2.length);
+    return Array.from({ length: maxLength }, (_, i) => ({
+      index: i,
+      throttle1: gas1[i]?.throttle ?? 0,
+      throttle2: gas2[i]?.throttle ?? 0,
+      brake1: braking1[i]?.brake ?? 0,
+      brake2: braking2[i]?.brake ?? 0,
     }));
-  };
+  }, [gas1, gas2, braking1, braking2]);
+
+  const gearComparison = useMemo(() => {
+    const maxLength = Math.max(gear1.length, gear2.length);
+    return Array.from({ length: maxLength }, (_, i) => ({
+      index: i,
+      gear1: gear1[i]?.gear ?? "N",
+      gear2: gear2[i]?.gear ?? "N",
+    }));
+  }, [gear1, gear2]);
+
+  const deltaComparison = useMemo(() => {
+    const maxLength = Math.max(delta1.length, delta2.length);
+    return Array.from({ length: maxLength }, (_, i) => ({
+      index: i,
+      delta1: delta1[i]?.deltaMs ?? 0,
+      delta2: delta2[i]?.deltaMs ?? 0,
+    }));
+  }, [delta1, delta2]);
+
+  // Calculate gear change differences
+  const gearChanges1 = gear1.reduce((acc, curr, i, arr) => {
+    if (i === 0) return 0;
+    return acc + (arr[i - 1].gear !== curr.gear ? 1 : 0);
+  }, 0);
+
+  const gearChanges2 = gear2.reduce((acc, curr, i, arr) => {
+    if (i === 0) return 0;
+    return acc + (arr[i - 1].gear !== curr.gear ? 1 : 0);
+  }, 0);
 
   const formatTime = (ms: number) => {
     const minutes = Math.floor(ms / 60000);
@@ -243,45 +127,6 @@ export function LapComparison({ laps }: LapComparisonProps) {
     const sign = ms >= 0 ? '+' : '';
     return `${sign}${(ms / 1000).toFixed(3)}s`;
   };
-
-  const trendAnalysis = getTrendAnalysis();
-  const performanceGaps = getPerformanceGaps();
-
-  // Get unique tracks and cars
-  const uniqueTracks = [...new Set(laps.map(lap => lap.trackName))].sort();
-  const uniqueCars = [...new Set(laps.map(lap => lap.carModel))].sort();
-
-  // Traditional lap comparison analysis
-  const getTraditionalAnalysis = (): ComparisonAnalysis | null => {
-    if (!lap1 || !lap2) return null;
-
-    const timeDiff = lap2.lapTime - lap1.lapTime;
-    const sectorDiffs = lap2.sectorTimes.map((sector, i) => sector - lap1.sectorTimes[i]);
-
-    return {
-      timeDifference: timeDiff,
-      sectorDifferences: sectorDiffs,
-      improvementAreas: [
-        {
-          area: "Braking Points",
-          description: "Consider braking later into turn 3 and turn 7",
-          potentialGain: 250
-        },
-        {
-          area: "Cornering Speed",
-          description: "Maintain higher speed through sector 2 corners",
-          potentialGain: 180
-        },
-        {
-          area: "Throttle Application",
-          description: "Earlier throttle application on corner exit",
-          potentialGain: 320
-        }
-      ]
-    };
-  };
-
-  const traditionalAnalysis = getTraditionalAnalysis();
 
   const sectorComparisonData = lap1 && lap2 ? [
     {
@@ -304,217 +149,165 @@ export function LapComparison({ laps }: LapComparisonProps) {
     }
   ] : [];
 
-  // Prepare radar chart data for performance comparison
-  const radarData = trendAnalysis.map(trend => ({
-    metric: trend.category.split(' ')[0], // Shorten names for chart
-    user: Math.max(0, 100 - (Math.abs(trend.improvement) / trend.fasterDriversAverage * 100)),
-    topDrivers: 100,
-    fullMetric: trend.category
-  }));
+  // Reset selections when track changes
+  const handleTrackChange = (track: string) => {
+    setSelectedTrack(track);
+    setSelectedLap1("");
+    setSelectedLap2("");
+  };
+
+  const renderTelemetryChart = () => {
+    switch (selectedTelemetryType) {
+      case "throttle":
+        return (
+          <div>
+            <h4 className="text-sm font-medium mb-2">Throttle Input</h4>
+            <ResponsiveContainer width="100%" height={500}>
+              <LineChart data={throttleBrakeComparison}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="index" />
+                <YAxis domain={[0, 1]} />
+                <Tooltip formatter={(value) => `${(Number(value) * 100).toFixed(1)}%`} />
+                <Line type="monotone" dataKey="throttle1" stroke="#8884d8" name="Throttle Lap1" strokeWidth={3} />
+                <Line type="monotone" dataKey="throttle2" stroke="#82ca9d" name="Throttle Lap2" strokeWidth={3} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      case "brake":
+        return (
+          <div>
+            <h4 className="text-sm font-medium mb-2">Brake Input</h4>
+            <ResponsiveContainer width="100%" height={500}>
+              <LineChart data={throttleBrakeComparison}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="index" />
+                <YAxis domain={[0, 1]} />
+                <Tooltip formatter={(value) => `${(Number(value) * 100).toFixed(1)}%`} />
+                <Line type="monotone" dataKey="brake1" stroke="#ff7300" name="Brake Lap1" strokeWidth={3} />
+                <Line type="monotone" dataKey="brake2" stroke="#ff0000" name="Brake Lap2" strokeWidth={3} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      case "gear":
+        return (
+          <div>
+            <h4 className="text-sm font-medium mb-2">Gear Changes</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-2xl font-bold">{gearChanges1}</div>
+                  <p className="text-xs text-muted-foreground">Gear Changes - {lap1?.trackName}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-2xl font-bold">{gearChanges2}</div>
+                  <p className="text-xs text-muted-foreground">Gear Changes - {lap2?.trackName}</p>
+                </CardContent>
+              </Card>
+            </div>
+            <ResponsiveContainer width="100%" height={500}>
+              <LineChart data={gearComparison}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="index" />
+                <YAxis />
+                <Tooltip />
+                <Line type="stepAfter" dataKey="gear1" stroke="#8884d8" name="Gear Lap1" strokeWidth={3} />
+                <Line type="stepAfter" dataKey="gear2" stroke="#82ca9d" name="Gear Lap2" strokeWidth={3} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      case "delta":
+        return (
+          <div>
+            <h4 className="text-sm font-medium mb-2">Delta Time Progression</h4>
+            <ResponsiveContainer width="100%" height={500}>
+              <LineChart data={deltaComparison}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="index" />
+                <YAxis />
+                <Tooltip formatter={(value) => `${(Number(value) / 1000).toFixed(3)}s`} />
+                <Line type="monotone" dataKey="delta1" stroke="#8884d8" name="Delta Lap1" strokeWidth={3} />
+                <Line type="monotone" dataKey="delta2" stroke="#82ca9d" name="Delta Lap2" strokeWidth={3} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      case "sector":
+        return (
+          <div>
+            <h4 className="text-sm font-medium mb-2">Sector-by-Sector Analysis</h4>
+            <ResponsiveContainer width="100%" height={500}>
+              <BarChart data={sectorComparisonData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="sector" />
+                <YAxis />
+                <Tooltip 
+                  formatter={(value, name) => [
+                    `${Number(value).toFixed(3)}s`, 
+                    name === 'lap1' ? 'Reference' : 'Comparison'
+                  ]}
+                />
+                <Bar dataKey="lap1" fill="#8884d8" name="lap1" />
+                <Bar dataKey="lap2" fill="#82ca9d" name="lap2" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5" />
-            Performance Analysis & Lap Comparison
+            <Target className="h-5 w-5" />
+            Lap Comparison
           </CardTitle>
           <CardDescription>
-            Compare your performance against faster drivers and analyze individual laps
+            Compare two laps from the same track to analyze telemetry differences
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4">
+            {/* Track Filter */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Filter by Track</label>
-              <Select value={selectedTrack} onValueChange={setSelectedTrack}>
+              <label className="text-sm font-medium flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                Select Track
+              </label>
+              <Select value={selectedTrack} onValueChange={handleTrackChange}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Choose a track to compare laps" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Tracks</SelectItem>
-                  {uniqueTracks.map(track => (
-                    <SelectItem key={track} value={track}>{track}</SelectItem>
+                  {uniqueTracks.map((track) => (
+                    <SelectItem key={track} value={track}>
+                      {track}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Filter by Car</label>
-              <Select value={selectedCar} onValueChange={setSelectedCar}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Cars</SelectItem>
-                  {uniqueCars.map(car => (
-                    <SelectItem key={car} value={car}>{car}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Tabs defaultValue="trends" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="trends" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            vs Faster Drivers
-          </TabsTrigger>
-          <TabsTrigger value="individual" className="flex items-center gap-2">
-            <GitCompare className="h-4 w-4" />
-            Individual Laps
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="trends" className="space-y-6">
-          {trendAnalysis.length > 0 ? (
-            <>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Target className="h-5 w-5" />
-                      Performance Overview
-                    </CardTitle>
-                    <CardDescription>
-                      Your performance vs top {filteredFasterDrivers.length} drivers
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <RadarChart data={radarData}>
-                        <PolarGrid />
-                        <PolarAngleAxis dataKey="metric" />
-                        <PolarRadiusAxis angle={90} domain={[0, 100]} tickCount={5} />
-                        <Radar name="You" dataKey="user" stroke="#8884d8" fill="#8884d8" fillOpacity={0.3} />
-                        <Radar name="Top Drivers" dataKey="topDrivers" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.3} />
-                        <Tooltip 
-                          formatter={(value, name) => [`${Number(value).toFixed(1)}%`, name]}
-                          labelFormatter={(label) => radarData.find(d => d.metric === label)?.fullMetric || label}
-                        />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Zap className="h-5 w-5" />
-                      Priority Improvement Areas
-                    </CardTitle>
-                    <CardDescription>
-                      Focus on these areas for maximum lap time gains
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {performanceGaps.slice(0, 4).map((gap, index) => (
-                        <div key={index} className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{gap.metric}</span>
-                            <Badge 
-                              variant={gap.impactLevel === "High" ? "destructive" : gap.impactLevel === "Medium" ? "default" : "secondary"}
-                            >
-                              {gap.impactLevel} Impact
-                            </Badge>
-                          </div>
-                          <Progress 
-                            value={Math.min(100, (gap.gap / Math.max(gap.userValue, gap.topDriversValue)) * 100)} 
-                            className="h-2"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Gap: {gap.metric.includes("Time") ? formatTimeDifference(gap.gap) : `${gap.gap.toFixed(1)} ${gap.metric.includes("Speed") ? "km/h" : "ms"}`}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5" />
-                    Detailed Analysis & Recommendations
-                  </CardTitle>
-                  <CardDescription>
-                    AI-powered insights based on {filteredFasterDrivers.length} faster drivers' telemetry
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4">
-                    {trendAnalysis.map((trend, index) => (
-                      <div key={index} className="border rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h4 className="font-medium">{trend.category}</h4>
-                            <p className="text-sm text-muted-foreground">{trend.description}</p>
-                          </div>
-                          <div className="text-right">
-                            <Badge variant="outline" className="mb-1">
-                              {trend.confidence}% confidence
-                            </Badge>
-                            <div className="text-sm">
-                              {trend.category.includes("Speed") ? (
-                                <span className={trend.improvement < 0 ? "text-red-500" : "text-green-500"}>
-                                  {trend.improvement > 0 ? "+" : ""}{trend.improvement.toFixed(1)} km/h
-                                </span>
-                              ) : (
-                                <span className={trend.improvement < 0 ? "text-green-500" : "text-red-500"}>
-                                  {formatTimeDifference(trend.improvement)}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="bg-muted/50 rounded-md p-3">
-                          <p className="text-sm"><strong>Action:</strong> {trend.actionableAdvice}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </>
-          ) : (
-            <Card>
-              <CardContent className="py-8">
-                <div className="text-center text-muted-foreground">
-                  <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  No data available for comparison. Upload more laps or adjust your filters.
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="individual" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Select Laps to Compare</CardTitle>
-              <CardDescription>
-                Choose two of your laps to analyze the differences
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+            {selectedTrack && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Reference Lap (Lap 1)</label>
-                  <Select onValueChange={setSelectedLap1}>
+                  <Select value={selectedLap1} onValueChange={setSelectedLap1}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select reference lap" />
                     </SelectTrigger>
                     <SelectContent>
-                      {laps.map((lap) => (
+                      {trackLaps.map((lap) => (
                         <SelectItem key={lap.id} value={lap.id}>
-                          {formatTime(lap.lapTime)} - {lap.trackName} ({lap.carModel})
+                          {formatTime(lap.lapTime)} - {lap.carModel}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -523,151 +316,138 @@ export function LapComparison({ laps }: LapComparisonProps) {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Comparison Lap (Lap 2)</label>
-                  <Select onValueChange={setSelectedLap2}>
+                  <Select value={selectedLap2} onValueChange={setSelectedLap2}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select comparison lap" />
                     </SelectTrigger>
                     <SelectContent>
-                      {laps.map((lap) => (
+                      {trackLaps.map((lap) => (
                         <SelectItem key={lap.id} value={lap.id}>
-                          {formatTime(lap.lapTime)} - {lap.trackName} ({lap.carModel})
+                          {formatTime(lap.lapTime)} - {lap.carModel}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-          {lap1 && lap2 && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      Reference Lap
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="text-2xl font-bold">{formatTime(lap1.lapTime)}</div>
-                      <div className="text-sm text-muted-foreground">{lap1.trackName}</div>
-                      <div className="text-sm text-muted-foreground">{lap1.carModel}</div>
-                      <Badge variant="secondary">{lap1.weather}</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
+      {selectedTrack && trackLaps.length === 0 && (
+        <Card>
+          <CardContent className="py-8">
+            <div className="text-center text-muted-foreground">
+              No laps found for {selectedTrack}. Upload some laps for this track first!
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      Comparison Lap
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="text-2xl font-bold">{formatTime(lap2.lapTime)}</div>
-                      <div className="text-sm text-muted-foreground">{lap2.trackName}</div>
-                      <div className="text-sm text-muted-foreground">{lap2.carModel}</div>
-                      <Badge variant="secondary">{lap2.weather}</Badge>
-                      {traditionalAnalysis && (
-                        <div className="flex items-center gap-2 mt-2">
-                          {traditionalAnalysis.timeDifference < 0 ? (
-                            <TrendingDown className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <TrendingUp className="h-4 w-4 text-red-500" />
-                          )}
-                          <span className={traditionalAnalysis.timeDifference < 0 ? "text-green-500" : "text-red-500"}>
-                            {formatTimeDifference(traditionalAnalysis.timeDifference)}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+      {selectedTrack && trackLaps.length > 0 && trackLaps.length < 2 && (
+        <Card>
+          <CardContent className="py-8">
+            <div className="text-center text-muted-foreground">
+              Need at least 2 laps on {selectedTrack} to compare. Upload another lap for this track!
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {lap1 && lap2 && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Reference Lap
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="text-2xl font-bold">{formatTime(lap1.lapTime)}</div>
+                  <div className="text-sm text-muted-foreground">{lap1.trackName}</div>
+                  <div className="text-sm text-muted-foreground">{lap1.carModel}</div>
+                  <Badge variant="secondary">{lap1.weather}</Badge>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Comparison Lap
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="text-2xl font-bold">{formatTime(lap2.lapTime)}</div>
+                  <div className="text-sm text-muted-foreground">{lap2.trackName}</div>
+                  <div className="text-sm text-muted-foreground">{lap2.carModel}</div>
+                  <Badge variant="secondary">{lap2.weather}</Badge>
+                  <div className="flex items-center gap-2 mt-2">
+                    {lap2.lapTime < lap1.lapTime ? (
+                      <TrendingDown className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <TrendingUp className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className={lap2.lapTime < lap1.lapTime ? "text-green-500" : "text-red-500"}>
+                      {formatTimeDifference(lap2.lapTime - lap1.lapTime)}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Telemetry Comparison */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                Telemetry Comparison
+              </CardTitle>
+              <CardDescription>
+                Select a telemetry type to compare between laps
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Telemetry Type Selector */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select Telemetry Type</label>
+                <Select value={selectedTelemetryType} onValueChange={setSelectedTelemetryType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose telemetry type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="throttle">Throttle Input</SelectItem>
+                    <SelectItem value="brake">Brake Input</SelectItem>
+                    <SelectItem value="gear">Gear Changes</SelectItem>
+                    <SelectItem value="delta">Delta Time Progression</SelectItem>
+                    <SelectItem value="sector">Sector-by-Sector Analysis</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Sector Comparison</CardTitle>
-                  <CardDescription>
-                    Compare sector times to identify areas for improvement
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={sectorComparisonData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="sector" />
-                      <YAxis />
-                      <Tooltip 
-                        formatter={(value, name) => [
-                          `${Number(value).toFixed(3)}s`, 
-                          name === 'lap1' ? 'Reference' : 'Comparison'
-                        ]}
-                      />
-                      <Bar dataKey="lap1" fill="#8884d8" name="lap1" />
-                      <Bar dataKey="lap2" fill="#82ca9d" name="lap2" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
+              {/* Render Selected Chart */}
+              {renderTelemetryChart()}
+            </CardContent>
+          </Card>
+        </>
+      )}
 
-              {traditionalAnalysis && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <AlertCircle className="h-5 w-5" />
-                      Improvement Analysis
-                    </CardTitle>
-                    <CardDescription>
-                      Suggestions based on your lap comparison
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {traditionalAnalysis.improvementAreas.map((area, index) => (
-                        <div key={index} className="border rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium">{area.area}</h4>
-                            <Badge variant="outline">
-                              -{(area.potentialGain / 1000).toFixed(3)}s
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground">{area.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </>
-          )}
-
-          {(!lap1 || !lap2) && laps.length > 0 && (
-            <Card>
-              <CardContent className="py-8">
-                <div className="text-center text-muted-foreground">
-                  Select two laps above to see detailed comparison and analysis
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {laps.length === 0 && (
-            <Card>
-              <CardContent className="py-8">
-                <div className="text-center text-muted-foreground">
-                  No laps available for comparison. Upload some laps first!
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-      </Tabs>
+      {!selectedTrack && (
+        <Card>
+          <CardContent className="py-8">
+            <div className="text-center text-muted-foreground">
+              Select a track above to start comparing laps.
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

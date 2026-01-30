@@ -19,7 +19,7 @@ import {
 } from "recharts";
 
 interface LapUploadProps {
-  onAddLap: (lap: LapData) => void;
+  onAddLap: (lap: LapData, telemetryData?: any[], telemetryMeta?: any) => void;
 }
 
 export function LapUpload({ onAddLap }: LapUploadProps) {
@@ -27,7 +27,6 @@ export function LapUpload({ onAddLap }: LapUploadProps) {
   const [fileName, setFileName] = useState<string>("");
 
   const parseTelemetryFile = (json: any) => {
-    // NEW FORMAT: { metadata, telemetry }
     if (json && Array.isArray(json.telemetry)) {
       localStorage.setItem(
         "lastUploadedTelemetry",
@@ -40,7 +39,6 @@ export function LapUpload({ onAddLap }: LapUploadProps) {
       return json.telemetry;
     }
 
-    // OLD FORMAT: pure array
     if (Array.isArray(json)) {
       localStorage.setItem("lastUploadedTelemetry", JSON.stringify(json));
       localStorage.removeItem("lastUploadedTelemetryMeta");
@@ -78,7 +76,7 @@ export function LapUpload({ onAddLap }: LapUploadProps) {
           averageSpeed: avgSpeed,
         };
 
-        onAddLap(newLap);
+        onAddLap(newLap, parsedTelemetry, json?.metadata);
       } catch (err) {
         console.error("Error parsing telemetry file:", err);
         alert("Invalid telemetry JSON file.");
