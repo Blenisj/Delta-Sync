@@ -5,12 +5,14 @@ React + Vite + Tailwind CSS v4 (frontend in `client/`). Backend is optional.
 ## Prerequisites
 - Node.js 20+ (LTS recommended)
 - npm 10+
+- Python 3.13+
 - Windows PowerShell (commands below use PowerShell)
 
 Check:
 ```powershell
 node -v
 npm -v
+python -V
 ```
 
 ## Project structure
@@ -36,7 +38,10 @@ If you add a backend later, also run:
 ```powershell
 cd ..\backend
 npm install
+python -m pip install firebase-admin
 ```
+
+Note: Database integration for the Python script requires access key from Firebase.
 
 # Install for rechart (ensures visuals for the graphs works on the frontend and is compatible with how tailwind manages it)
 cd client
