@@ -108,6 +108,24 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
 
   const leaderboardData = useMemo(() => generateMockLeaderboard(), [userLaps]);
 
+  // Compute available tracks based on selected car
+  const availableTracks = useMemo(() => {
+    if (selectedCar === "all") {
+      return [...new Set(leaderboardData.map(entry => entry.trackName))].sort();
+    } else {
+      return [...new Set(leaderboardData.filter(entry => entry.carModel === selectedCar).map(entry => entry.trackName))].sort();
+    }
+  }, [leaderboardData, selectedCar]);
+
+  // Compute available cars based on selected track
+  const availableCars = useMemo(() => {
+    if (selectedTrack === "all") {
+      return [...new Set(leaderboardData.map(entry => entry.carModel))].sort();
+    } else {
+      return [...new Set(leaderboardData.filter(entry => entry.trackName === selectedTrack).map(entry => entry.carModel))].sort();
+    }
+  }, [leaderboardData, selectedTrack]);
+
   // Filter and sort the data
   const filteredAndSortedData = useMemo(() => {
     let filtered = leaderboardData;
@@ -123,10 +141,6 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
     // Sort by lap time (fastest first)
     return filtered.sort((a, b) => a.lapTime - b.lapTime);
   }, [leaderboardData, selectedTrack, selectedCar]);
-
-  // Get unique tracks and cars for filter options
-  const uniqueTracks = [...new Set(leaderboardData.map(entry => entry.trackName))].sort();
-  const uniqueCars = [...new Set(leaderboardData.map(entry => entry.carModel))].sort();
 
   const formatTime = (ms: number) => {
     const minutes = Math.floor(ms / 60000);
@@ -172,13 +186,24 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
                 <MapPin className="h-4 w-4" />
                 <label className="text-sm font-medium">Filter by Track</label>
               </div>
-              <Select value={selectedTrack} onValueChange={setSelectedTrack}>
+              <Select 
+                value={selectedTrack} 
+                onValueChange={(value) => {
+                  setSelectedTrack(value);
+                  if (value !== "all" && selectedCar !== "all") {
+                    const hasCarOnTrack = leaderboardData.some(entry => entry.trackName === value && entry.carModel === selectedCar);
+                    if (!hasCarOnTrack) {
+                      setSelectedCar("all");
+                    }
+                  }
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Tracks</SelectItem>
-                  {uniqueTracks.map(track => (
+                  {availableTracks.map(track => (
                     <SelectItem key={track} value={track}>{track}</SelectItem>
                   ))}
                 </SelectContent>
@@ -190,13 +215,24 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
                 <Car className="h-4 w-4" />
                 <label className="text-sm font-medium">Filter by Car</label>
               </div>
-              <Select value={selectedCar} onValueChange={setSelectedCar}>
+              <Select 
+                value={selectedCar} 
+                onValueChange={(value) => {
+                  setSelectedCar(value);
+                  if (value !== "all" && selectedTrack !== "all") {
+                    const hasTrackForCar = leaderboardData.some(entry => entry.carModel === value && entry.trackName === selectedTrack);
+                    if (!hasTrackForCar) {
+                      setSelectedTrack("all");
+                    }
+                  }
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Cars</SelectItem>
-                  {uniqueCars.map(car => (
+                  {availableCars.map(car => (
                     <SelectItem key={car} value={car}>{car}</SelectItem>
                   ))}
                 </SelectContent>
@@ -230,7 +266,7 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
                     <div className="flex items-center justify-center w-8">
                       {getRankIcon(position)}
                     </div>
-                    
+
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className={entry.isCurrentUser ? "bg-primary text-primary-foreground" : ""}>
                         {entry.userInitials}
