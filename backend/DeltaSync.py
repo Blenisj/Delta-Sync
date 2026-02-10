@@ -55,7 +55,8 @@ def acMain(ac_version):
     safe_track = _safe_name(track_name)
     timestamp = time.strftime("%Y%m%d_%H%M%S")
 
-    filename = "telemetry_{}_{}_{}.json".format(safe_track, safe_car, timestamp)
+    # Note from RS: changed file name for testing
+    filename = "telemetry_log.json"
     LOG_FILE = os.path.join(base_dir, filename)
 
     ac.log("DeltaSync: logging to {}".format(LOG_FILE))
