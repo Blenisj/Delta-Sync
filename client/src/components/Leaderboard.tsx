@@ -5,6 +5,7 @@ import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Trophy, Medal, Award, Clock, Car, MapPin, Filter } from "lucide-react";
 import type { LapData } from "../types/racing";
+import { getAll } from "../../../database/db_funcs"
 
 interface LeaderboardEntry extends LapData {
   userName: string;
@@ -17,6 +18,7 @@ interface LeaderboardProps {
 }
 
 export function Leaderboard({ userLaps }: LeaderboardProps) {
+  console.log(getAll());
   const [selectedTrack, setSelectedTrack] = useState<string>("all");
   const [selectedCar, setSelectedCar] = useState<string>("all");
 
