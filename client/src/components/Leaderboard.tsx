@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, use } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Badge } from "./ui/badge";
@@ -18,97 +18,28 @@ interface LeaderboardProps {
 }
 
 export function Leaderboard({ userLaps }: LeaderboardProps) {
-  console.log(getAll());
   const [selectedTrack, setSelectedTrack] = useState<string>("all");
   const [selectedCar, setSelectedCar] = useState<string>("all");
 
-  // Generate mock leaderboard data with other users
-  const generateMockLeaderboard = (): LeaderboardEntry[] => {
-    const mockUsers = [
-      { name: "Alex Rodriguez", initials: "AR" },
-      { name: "Sarah Chen", initials: "SC" },
-      { name: "Marcus Johnson", initials: "MJ" },
-      { name: "Elena Petrov", initials: "EP" },
-      { name: "David Kim", initials: "DK" },
-      { name: "Isabella Torres", initials: "IT" },
-      { name: "James Wilson", initials: "JW" },
-      { name: "Zoe Anderson", initials: "ZA" },
-      { name: "Ryan O'Connor", initials: "RO" },
-      { name: "Nina Sharma", initials: "NS" }
-    ];
+  //get all data from database
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getAll();
 
-    const tracks = ["Spa-Francorchamps", "Monza", "Silverstone", "Suzuka", "Brands Hatch", "Nürburgring"];
-    const cars = ["Ferrari 488 GT3", "McLaren 720S GT3", "Porsche 991 GT3 R", "BMW M6 GT3", "Audi R8 LMS", "Mercedes AMG GT3"];
-    
-    const mockLaps: LeaderboardEntry[] = [];
-
-    // Add current user's laps
-    userLaps.forEach(lap => {
-      mockLaps.push({
-        ...lap,
-        userName: "You",
-        userInitials: "ME",
-        isCurrentUser: true
-      });
-    });
-
-    // Generate mock laps for other users
-    for (let i = 0; i < 50; i++) {
-      const track = tracks[Math.floor(Math.random() * tracks.length)];
-      const car = cars[Math.floor(Math.random() * cars.length)];
-      const user = mockUsers[Math.floor(Math.random() * mockUsers.length)];
-      
-      // Generate realistic lap times based on track
-      let baseLapTime = 120000; // 2:00.000 default
-      switch (track) {
-        case "Monza":
-          baseLapTime = 95000 + Math.random() * 8000; // 1:35-1:43
-          break;
-        case "Spa-Francorchamps":
-          baseLapTime = 125000 + Math.random() * 10000; // 2:05-2:15
-          break;
-        case "Silverstone":
-          baseLapTime = 110000 + Math.random() * 8000; // 1:50-1:58
-          break;
-        case "Suzuka":
-          baseLapTime = 108000 + Math.random() * 7000; // 1:48-1:55
-          break;
-        case "Brands Hatch":
-          baseLapTime = 78000 + Math.random() * 5000; // 1:18-1:23
-          break;
-        case "Nürburgring":
-          baseLapTime = 480000 + Math.random() * 30000; // 8:00-8:30
-          break;
-      }
-
-      const lapTime = Math.floor(baseLapTime);
-      const sectorTimes = [
-        Math.floor(lapTime * 0.33),
-        Math.floor(lapTime * 0.33),
-        Math.floor(lapTime * 0.34)
-      ];
-
-      mockLaps.push({
-        id: `mock-${i}`,
-        trackName: track,
-        carModel: car,
-        lapTime,
-        dateRecorded: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000), // Random within last week
-        weather: Math.random() > 0.8 ? "wet" : "dry",
-        temperature: Math.floor(Math.random() * 20) + 15, // 15-35°C
-        sectorTimes,
-        topSpeed: Math.floor(Math.random() * 50) + 250, // 250-300 km/h
-        averageSpeed: Math.floor(Math.random() * 30) + 140, // 140-170 km/h
-        userName: user.name,
-        userInitials: user.initials,
-        isCurrentUser: false
-      });
+      setData(
+        data.map((lap: any) => ({
+          ...lap,
+          userName: lap.userName || "Unknown",
+          userInitials: lap.userInitials || "??",
+          isCurrentUser: false
+        }))
+      )
     }
 
-    return mockLaps;
-  };
+    fetchData();
+  })
 
-  const leaderboardData = useMemo(() => generateMockLeaderboard(), [userLaps]);
+  const [leaderboardData, setData] = useState<LeaderboardEntry[]>([]);
 
   // Filter and sort the data
   const filteredAndSortedData = useMemo(() => {
