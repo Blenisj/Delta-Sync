@@ -33,13 +33,7 @@ def formatData(_file):
     txt = _file.read()
     obj = json.loads(txt)
     data = {
-        "metadata": {
-            "lap_time": obj["metadata"]["best_lap_time_ms"],
-            "track": obj["metadata"]["track_name"],
-            "car": obj["metadata"]["car_name"],
-            "timestamp": obj["metadata"]["last_save_timestamp"],
-            "samples": obj["metadata"]["samples_logged"]
-        },
+        "metadata": obj["metadata"],
         "telemetry": obj["telemetry"]
     }
     sendData(data)
