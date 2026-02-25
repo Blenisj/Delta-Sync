@@ -25,6 +25,7 @@ export function LapComparison({ laps }: LapComparisonProps) {
   const [selectedLap1, setSelectedLap1] = useState<string>("");
   const [selectedLap2, setSelectedLap2] = useState<string>("");
   const [selectedTelemetryType, setSelectedTelemetryType] = useState<string>("throttle-brake");
+  const [selectedSector, setSelectedSector] = useState<string>("whole");
 
   // Get unique tracks from laps
   const uniqueTracks = useMemo(() => {
@@ -76,35 +77,99 @@ export function LapComparison({ laps }: LapComparisonProps) {
   const delta1 = useMemo(() => getDeltaTimeSeries(telemetry1, meta1 ?? undefined), [telemetry1, meta1]);
   const delta2 = useMemo(() => getDeltaTimeSeries(telemetry2, meta2 ?? undefined), [telemetry2, meta2]);
 
-  // Prepare comparison data for charts
+  // Helper function to interpolate array to new length
+  const interpolateArray = (arr: any[], newLength: number) => {
+    if (arr.length === newLength || arr.length === 0) return arr;
+    const result = [];
+    for (let i = 0; i < newLength; i++) {
+      const pos = (i / (newLength - 1)) * (arr.length - 1);
+      const idx = Math.floor(pos);
+      const frac = pos - idx;
+      if (idx + 1 < arr.length) {
+        const a = arr[idx];
+        const b = arr[idx + 1];
+        const interpolated: any = {};
+        for (const key in a) {
+          if (typeof a[key] === 'number' && typeof b[key] === 'number') {
+            interpolated[key] = a[key] * (1 - frac) + b[key] * frac;
+          } else {
+            interpolated[key] = a[key]; // Copy non-numeric fields
+          }
+        }
+        result.push(interpolated);
+      } else {
+        result.push(arr[idx]);
+      }
+    }
+    return result;
+  };
+
+  // Determine max length for scaling
+  const maxLength = Math.max(
+    gas1.length, gas2.length, braking1.length, braking2.length,
+    gear1.length, gear2.length, delta1.length, delta2.length
+  );
+
+  // Interpolate series to max length
+  const gas1_interp = interpolateArray(gas1, maxLength);
+  const gas2_interp = interpolateArray(gas2, maxLength);
+  const braking1_interp = interpolateArray(braking1, maxLength);
+  const braking2_interp = interpolateArray(braking2, maxLength);
+  const gear1_interp = interpolateArray(gear1, maxLength);
+  const gear2_interp = interpolateArray(gear2, maxLength);
+  const delta1_interp = interpolateArray(delta1.map(d => ({ deltaMs: d.deltaMs })), maxLength).map(d => d.deltaMs);
+  const delta2_interp = interpolateArray(delta2.map(d => ({ deltaMs: d.deltaMs })), maxLength).map(d => d.deltaMs);
+
+  // Compute sector boundaries (divide lap into 3 equal portions)
+  const sectorBoundaries = useMemo(() => {
+    let startIdx = 0;
+    let endIdx = maxLength - 1;
+    if (selectedSector !== "whole") {
+      const sectorIndex = parseInt(selectedSector) - 1;
+      const portion = maxLength / 3;
+      startIdx = Math.floor(sectorIndex * portion);
+      endIdx = Math.floor((sectorIndex + 1) * portion) - 1;
+      if (sectorIndex === 2) endIdx = maxLength - 1; // Ensure last sector goes to end
+    }
+    return { startIdx, endIdx };
+  }, [selectedSector, maxLength]);
+
+  // Slice interpolated arrays based on sector
+  const gas1_sliced = gas1_interp.slice(sectorBoundaries.startIdx, sectorBoundaries.endIdx + 1);
+  const gas2_sliced = gas2_interp.slice(sectorBoundaries.startIdx, sectorBoundaries.endIdx + 1);
+  const braking1_sliced = braking1_interp.slice(sectorBoundaries.startIdx, sectorBoundaries.endIdx + 1);
+  const braking2_sliced = braking2_interp.slice(sectorBoundaries.startIdx, sectorBoundaries.endIdx + 1);
+  const gear1_sliced = gear1_interp.slice(sectorBoundaries.startIdx, sectorBoundaries.endIdx + 1);
+  const gear2_sliced = gear2_interp.slice(sectorBoundaries.startIdx, sectorBoundaries.endIdx + 1);
+  const delta1_sliced = delta1_interp.slice(sectorBoundaries.startIdx, sectorBoundaries.endIdx + 1);
+  const delta2_sliced = delta2_interp.slice(sectorBoundaries.startIdx, sectorBoundaries.endIdx + 1);
+
+  // Prepare comparison data for charts with normalized progress
   const throttleBrakeComparison = useMemo(() => {
-    const maxLength = Math.max(gas1.length, gas2.length, braking1.length, braking2.length);
-    return Array.from({ length: maxLength }, (_, i) => ({
-      index: i,
-      throttle1: gas1[i]?.throttle ?? 0,
-      throttle2: gas2[i]?.throttle ?? 0,
-      brake1: braking1[i]?.brake ?? 0,
-      brake2: braking2[i]?.brake ?? 0,
+    return Array.from({ length: gas1_sliced.length }, (_, i) => ({
+      progress: i / (gas1_sliced.length - 1 || 1),
+      throttle1: gas1_sliced[i]?.throttle ?? 0,
+      throttle2: gas2_sliced[i]?.throttle ?? 0,
+      brake1: braking1_sliced[i]?.brake ?? 0,
+      brake2: braking2_sliced[i]?.brake ?? 0,
     }));
-  }, [gas1, gas2, braking1, braking2]);
+  }, [gas1_sliced, gas2_sliced, braking1_sliced, braking2_sliced]);
 
   const gearComparison = useMemo(() => {
-    const maxLength = Math.max(gear1.length, gear2.length);
-    return Array.from({ length: maxLength }, (_, i) => ({
-      index: i,
-      gear1: gear1[i]?.gear ?? "N",
-      gear2: gear2[i]?.gear ?? "N",
+    return Array.from({ length: gear1_sliced.length }, (_, i) => ({
+      progress: i / (gear1_sliced.length - 1 || 1),
+      gear1: gear1_sliced[i]?.gear ?? "N",
+      gear2: gear2_sliced[i]?.gear ?? "N",
     }));
-  }, [gear1, gear2]);
+  }, [gear1_sliced, gear2_sliced]);
 
   const deltaComparison = useMemo(() => {
-    const maxLength = Math.max(delta1.length, delta2.length);
-    return Array.from({ length: maxLength }, (_, i) => ({
-      index: i,
-      delta1: delta1[i]?.deltaMs ?? 0,
-      delta2: delta2[i]?.deltaMs ?? 0,
+    return Array.from({ length: delta1_sliced.length }, (_, i) => ({
+      progress: i / (delta1_sliced.length - 1 || 1),
+      delta1: delta1_sliced[i] ?? 0,
+      delta2: delta2_sliced[i] ?? 0,
     }));
-  }, [delta1, delta2]);
+  }, [delta1_sliced, delta2_sliced]);
 
   // Calculate gear change differences
   const gearChanges1 = gear1.reduce((acc, curr, i, arr) => {
@@ -165,11 +230,11 @@ export function LapComparison({ laps }: LapComparisonProps) {
             <ResponsiveContainer width="100%" height={500}>
               <LineChart data={throttleBrakeComparison}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="index" />
+                <XAxis dataKey="progress" domain={[0, 1]} />
                 <YAxis domain={[0, 1]} />
                 <Tooltip formatter={(value) => `${(Number(value) * 100).toFixed(1)}%`} />
-                <Line type="monotone" dataKey="throttle1" stroke="#8884d8" name="Throttle Lap1" strokeWidth={3} />
-                <Line type="monotone" dataKey="throttle2" stroke="#82ca9d" name="Throttle Lap2" strokeWidth={3} />
+                <Line type="monotone" dataKey="throttle1" stroke="#8884d8" name="Throttle Lap1" strokeWidth={1} dot={false} />
+                <Line type="monotone" dataKey="throttle2" stroke="#82ca9d" name="Throttle Lap2" strokeWidth={1} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -181,11 +246,11 @@ export function LapComparison({ laps }: LapComparisonProps) {
             <ResponsiveContainer width="100%" height={500}>
               <LineChart data={throttleBrakeComparison}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="index" />
+                <XAxis dataKey="progress" domain={[0, 1]} />
                 <YAxis domain={[0, 1]} />
                 <Tooltip formatter={(value) => `${(Number(value) * 100).toFixed(1)}%`} />
-                <Line type="monotone" dataKey="brake1" stroke="#ff7300" name="Brake Lap1" strokeWidth={3} />
-                <Line type="monotone" dataKey="brake2" stroke="#ff0000" name="Brake Lap2" strokeWidth={3} />
+                <Line type="monotone" dataKey="brake1" stroke="#ff7300" name="Brake Lap1" strokeWidth={1} dot={false} />
+                <Line type="monotone" dataKey="brake2" stroke="#ff0000" name="Brake Lap2" strokeWidth={1} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -211,11 +276,11 @@ export function LapComparison({ laps }: LapComparisonProps) {
             <ResponsiveContainer width="100%" height={500}>
               <LineChart data={gearComparison}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="index" />
+                <XAxis dataKey="progress" domain={[0, 1]} />
                 <YAxis />
                 <Tooltip />
-                <Line type="stepAfter" dataKey="gear1" stroke="#8884d8" name="Gear Lap1" strokeWidth={3} />
-                <Line type="stepAfter" dataKey="gear2" stroke="#82ca9d" name="Gear Lap2" strokeWidth={3} />
+                <Line type="stepAfter" dataKey="gear1" stroke="#8884d8" name="Gear Lap1" strokeWidth={1} dot={false} />
+                <Line type="stepAfter" dataKey="gear2" stroke="#82ca9d" name="Gear Lap2" strokeWidth={1} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -227,11 +292,11 @@ export function LapComparison({ laps }: LapComparisonProps) {
             <ResponsiveContainer width="100%" height={500}>
               <LineChart data={deltaComparison}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="index" />
+                <XAxis dataKey="progress" domain={[0, 1]} />
                 <YAxis />
                 <Tooltip formatter={(value) => `${(Number(value) / 1000).toFixed(3)}s`} />
-                <Line type="monotone" dataKey="delta1" stroke="#8884d8" name="Delta Lap1" strokeWidth={3} />
-                <Line type="monotone" dataKey="delta2" stroke="#82ca9d" name="Delta Lap2" strokeWidth={3} />
+                <Line type="monotone" dataKey="delta1" stroke="#8884d8" name="Delta Lap1" strokeWidth={1} dot={false} />
+                <Line type="monotone" dataKey="delta2" stroke="#82ca9d" name="Delta Lap2" strokeWidth={1} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -428,6 +493,22 @@ export function LapComparison({ laps }: LapComparisonProps) {
                     <SelectItem value="gear">Gear Changes</SelectItem>
                     <SelectItem value="delta">Delta Time Progression</SelectItem>
                     <SelectItem value="sector">Sector-by-Sector Analysis</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Sector Filter */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Filter by Sector</label>
+                <Select value={selectedSector} onValueChange={setSelectedSector}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose sector to display" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="whole">Whole Lap</SelectItem>
+                    <SelectItem value="1">Sector 1</SelectItem>
+                    <SelectItem value="2">Sector 2</SelectItem>
+                    <SelectItem value="3">Sector 3</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
