@@ -1,31 +1,26 @@
-const { MongoClient, ServerApiVersion } = require("mongodb")
-require("dotenv").config({path: './env/config.env'})
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
-const cert = './env/user_cert.pem'
-/* 
-  NOTE ABOUT AUTHENTICATION:
-  MongoDB requires either a user with a password or 
-  a user with a certificate to connect to the database.
-  Since the former would potentially cause a
-  security vulnerability, a user with a certificate
-  will be used until I can find a way to authenticate
-  without needing sensitive information. For the meantime,
-  ask me (Riley) for the certificate.
-*/
+//to do: put this config in a separate file.
+const firebaseConfig = {
+    apiKey: "AIzaSyBE1ChYTYX51x3GJty9ilx2U5PPyJCodpM",
 
-const client = new MongoClient(process.env.ATLAS_URI, {
-  tlsCertificateKeyFile: cert,
-  serverApi: ServerApiVersion.v1
-});
+  authDomain: "deltasync-c17bc.firebaseapp.com",
 
-let database
+  projectId: "deltasync-c17bc",
 
-// Functions that allows the web app to access the database.
-module.exports = {
-  connectToServer: () => {
-    database = client.db("dsync");
-  },
-  getDb: () => {
-    return database;
-  }
-}
+  storageBucket: "deltasync-c17bc.firebasestorage.app",
+
+  messagingSenderId: "146451232667",
+
+  appId: "1:146451232667:web:a3ee49ba9ed5349f0e133e",
+
+  measurementId: "G-DEHG04VCCH"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+export const db = getFirestore(app);
+
+console.log(db);
