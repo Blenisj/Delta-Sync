@@ -7,12 +7,9 @@ export async function getAll() {
         const data = doc.data();
 
         // Support both schemas:
-        // 1) one document per lap (metadata/telemetry on root)
-        // 2) one document containing many laps in data.laps[]
         const laps = Array.isArray(data?.laps) ? data.laps : [data];
 
         return laps.map((lap, index) => {
-            // Some records store metadata under `metadata`, others at the top level.
             const metadata = lap?.metadata ?? lap ?? {};
             return {
                 id: laps.length > 1 ? `${doc.id}-${index}` : doc.id,
