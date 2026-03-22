@@ -1,104 +1,23 @@
-import { useState, useMemo, useEffect, use } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import { Trophy, Medal, Award, Clock, Car, MapPin, Filter } from "lucide-react";
-import type { LapData } from "../types/racing";
-import { getAll } from "../../../database/db_funcs"
-
-interface LeaderboardEntry extends LapData {
-  userName: string;
-  userInitials: string;
-  isCurrentUser?: boolean;
-}
-
-interface LeaderboardProps {
-  userLaps: LapData[];
-}
+import { Trophy, Clock, Car, MapPin, Filter } from "lucide-react";
+import type { LeaderboardProps } from "../types/racing";
+import { useLeaderboard } from "./hooks/useLeaderboard";
+import { getRankIcon, getPositionDelta, formatLeaderboardTime } from "./utils/leaderboardUtils";
+import { formatIdentifierLabel, formatWeatherLabel } from "./utils/displayFormatters";
 
 export function Leaderboard({ userLaps }: LeaderboardProps) {
-  const [selectedTrack, setSelectedTrack] = useState<string>("all");
-  const [selectedCar, setSelectedCar] = useState<string>("all");
-
-  //get all data from database
-  useEffect(() => {
-    async function fetchData() {
-      const data = await getAll();
-
-      setData(
-        data.map((lap: any) => ({
-          ...lap,
-          userName: lap.userName || "Unknown",
-          userInitials: lap.userInitials || "??",
-          isCurrentUser: false
-        }))
-      )
-    }
-
-    fetchData();
-  })
-
-  const [leaderboardData, setData] = useState<LeaderboardEntry[]>([]);
-
-  // Compute available tracks based on selected car
-  const availableTracks = useMemo(() => {
-    if (selectedCar === "all") {
-      return [...new Set(leaderboardData.map(entry => entry.trackName))].sort();
-    } else {
-      return [...new Set(leaderboardData.filter(entry => entry.carModel === selectedCar).map(entry => entry.trackName))].sort();
-    }
-  }, [leaderboardData, selectedCar]);
-
-  // Compute available cars based on selected track
-  const availableCars = useMemo(() => {
-    if (selectedTrack === "all") {
-      return [...new Set(leaderboardData.map(entry => entry.carModel))].sort();
-    } else {
-      return [...new Set(leaderboardData.filter(entry => entry.trackName === selectedTrack).map(entry => entry.carModel))].sort();
-    }
-  }, [leaderboardData, selectedTrack]);
-
-  // Filter and sort the data
-  const filteredAndSortedData = useMemo(() => {
-    let filtered = leaderboardData;
-
-    if (selectedTrack !== "all") {
-      filtered = filtered.filter(entry => entry.trackName === selectedTrack);
-    }
-
-    if (selectedCar !== "all") {
-      filtered = filtered.filter(entry => entry.carModel === selectedCar);
-    }
-
-    // Sort by lap time (fastest first)
-    return filtered.sort((a, b) => a.lapTime - b.lapTime);
-  }, [leaderboardData, selectedTrack, selectedCar]);
-
-  const formatTime = (ms: number) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = ((ms % 60000) / 1000).toFixed(3);
-    return `${minutes}:${seconds.padStart(6, '0')}`;
-  };
-
-  const getRankIcon = (position: number) => {
-    switch (position) {
-      case 1:
-        return <Trophy className="h-5 w-5 text-yellow-500" />;
-      case 2:
-        return <Medal className="h-5 w-5 text-gray-400" />;
-      case 3:
-        return <Award className="h-5 w-5 text-amber-600" />;
-      default:
-        return <span className="text-muted-foreground font-medium">#{position}</span>;
-    }
-  };
-
-  const getPositionDelta = (entry: LeaderboardEntry, position: number) => {
-    if (position === 1) return null;
-    const timeDiff = entry.lapTime - filteredAndSortedData[0].lapTime;
-    return `+${(timeDiff / 1000).toFixed(3)}s`;
-  };
+  const {
+    selectedTrack,
+    selectedCar,
+    availableTracks,
+    availableCars,
+    filteredAndSortedData,
+    handleTrackChange,
+    handleCarChange,
+  } = useLeaderboard(userLaps);
 
   return (
     <div className="space-y-6">
@@ -121,15 +40,7 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
               </div>
               <Select 
                 value={selectedTrack} 
-                onValueChange={(value) => {
-                  setSelectedTrack(value);
-                  if (value !== "all" && selectedCar !== "all") {
-                    const hasCarOnTrack = leaderboardData.some(entry => entry.trackName === value && entry.carModel === selectedCar);
-                    if (!hasCarOnTrack) {
-                      setSelectedCar("all");
-                    }
-                  }
-                }}
+                onValueChange={handleTrackChange}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -137,7 +48,7 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
                 <SelectContent>
                   <SelectItem value="all">All Tracks</SelectItem>
                   {availableTracks.map(track => (
-                    <SelectItem key={track} value={track}>{track}</SelectItem>
+                    <SelectItem key={track} value={track}>{formatIdentifierLabel(track)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -150,15 +61,7 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
               </div>
               <Select 
                 value={selectedCar} 
-                onValueChange={(value) => {
-                  setSelectedCar(value);
-                  if (value !== "all" && selectedTrack !== "all") {
-                    const hasTrackForCar = leaderboardData.some(entry => entry.carModel === value && entry.trackName === selectedTrack);
-                    if (!hasTrackForCar) {
-                      setSelectedTrack("all");
-                    }
-                  }
-                }}
+                onValueChange={handleCarChange}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -166,7 +69,7 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
                 <SelectContent>
                   <SelectItem value="all">All Cars</SelectItem>
                   {availableCars.map(car => (
-                    <SelectItem key={car} value={car}>{car}</SelectItem>
+                    <SelectItem key={car} value={car}>{formatIdentifierLabel(car)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -179,14 +82,14 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
         <CardHeader>
           <CardTitle>Rankings</CardTitle>
           <CardDescription>
-            {filteredAndSortedData.length} drivers • {selectedTrack !== "all" ? selectedTrack : "All tracks"} • {selectedCar !== "all" ? selectedCar : "All cars"}
+            {filteredAndSortedData.length} drivers • {selectedTrack !== "all" ? formatIdentifierLabel(selectedTrack) : "All tracks"} • {selectedCar !== "all" ? formatIdentifierLabel(selectedCar) : "All cars"}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
             {filteredAndSortedData.slice(0, 50).map((entry, index) => {
               const position = index + 1;
-              const delta = getPositionDelta(entry, position);
+              const delta = getPositionDelta(entry, position, filteredAndSortedData);
               
               return (
                 <div 
@@ -216,7 +119,7 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
                         )}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        {entry.trackName} • {entry.carModel}
+                        {formatIdentifierLabel(entry.trackName)} • {formatIdentifierLabel(entry.carModel)}
                       </div>
                     </div>
                   </div>
@@ -224,7 +127,7 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">
-                        {entry.weather}
+                        {formatWeatherLabel(entry.weather)}
                       </Badge>
                       <span className="text-xs text-muted-foreground">
                         {entry.temperature}°C
@@ -234,7 +137,7 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
                     <div className="text-right">
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-bold">{formatTime(entry.lapTime)}</span>
+                        <span className="font-bold">{formatLeaderboardTime(entry.lapTime)}</span>
                       </div>
                       {delta && (
                         <div className="text-xs text-muted-foreground">

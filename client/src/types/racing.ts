@@ -38,3 +38,26 @@ export interface ComparisonAnalysis {
   sectorDifferences: number[]; // array of sector differences in milliseconds
   improvementAreas: ImprovementArea[];
 }
+
+// Component Props Types
+export interface DashboardProps {
+  laps: LapData[];
+  lastUploadedTelemetry?: any[];
+}
+
+export interface LapUploadProps {
+  onAddLap: (lap: LapData, telemetryData?: any[], telemetryMeta?: any) => void;
+}
+
+export interface LapComparisonProps {
+  laps: LapData[];
+}
+
+export interface TelemetryAnalysisProps {
+  laps: LapData[];
+  lastUploadedTelemetry?: any[];
+}
+
+export interface LeaderboardProps {
+  userLaps: LapData[];
+}
