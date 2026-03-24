@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,7 +7,7 @@ import {
 } from "./ui/card";
 import { Button } from "./ui/button";
 import { Upload } from "lucide-react";
-import type { LapData } from "../types/racing";
+import type { LapUploadProps } from "../types/racing";
 import {
   LineChart,
   Line,
@@ -17,85 +16,10 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
-interface LapUploadProps {
-  onAddLap: (lap: LapData, telemetryData?: any[], telemetryMeta?: any) => void;
-}
+import { useLapUpload } from "./hooks/useLapUpload";
 
 export function LapUpload({ onAddLap }: LapUploadProps) {
-  const [telemetry, setTelemetry] = useState<any[]>([]);
-  const [fileName, setFileName] = useState<string>("");
-
-  const parseTelemetryFile = (json: any) => {
-    if (json && Array.isArray(json.telemetry)) {
-      localStorage.setItem(
-        "lastUploadedTelemetry",
-        JSON.stringify(json.telemetry)
-      );
-      localStorage.setItem(
-        "lastUploadedTelemetryMeta",
-        JSON.stringify(json.metadata || {})
-      );
-      return json.telemetry;
-    }
-
-    if (Array.isArray(json)) {
-      localStorage.setItem("lastUploadedTelemetry", JSON.stringify(json));
-      localStorage.removeItem("lastUploadedTelemetryMeta");
-      return json;
-    }
-
-    throw new Error("Invalid telemetry format");
-  };
-
-  const handleFileUpload = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const json = JSON.parse(e.target?.result as string);
-
-        const parsedTelemetry = parseTelemetryFile(json);
-        setTelemetry(parsedTelemetry);
-        setFileName(file.name);
-
-        const maxSpeed = Math.max(...parsedTelemetry.map((d) => d.speed));
-        const avgSpeed =
-          parsedTelemetry.reduce((acc, d) => acc + d.speed, 0) /
-          (parsedTelemetry.length || 1);
-
-        const newLap: LapData = {
-          id: Date.now().toString(),
-          trackName: json?.metadata?.track_name || "Unknown Track",
-          carModel: json?.metadata?.car_name || "Unknown Car",
-          lapTime: json?.metadata?.best_lap_time_ms || 0,
-          dateRecorded: new Date(),
-          weather: "dry",
-          temperature: 20,
-          sectorTimes: [],
-          topSpeed: maxSpeed,
-          averageSpeed: avgSpeed,
-        };
-
-        onAddLap(newLap, parsedTelemetry, json?.metadata);
-      } catch (err) {
-        console.error("Error parsing telemetry file:", err);
-        alert("Invalid telemetry JSON file.");
-      }
-    };
-
-    reader.readAsText(file);
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && file.name.endsWith(".json")) handleFileUpload(file);
-  };
-
-  const handleBrowse = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFileUpload(file);
-  };
+  const { telemetry, fileName, handleDrop, handleBrowse } = useLapUpload(onAddLap);
 
   return (
     <div className="space-y-6">

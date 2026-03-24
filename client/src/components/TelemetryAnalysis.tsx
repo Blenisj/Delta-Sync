@@ -1,17 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useState } from "react";
 import { TelemetryMetadata } from "./TelemetryMetadata";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import type { LapData } from "../types/racing";
-import {
-  getBrakingSeries,
-  getGasSeries,
-  getGearSeries,
-  getDeltaTimeSeries,
-  type TelemetrySample,
-  type TelemetryMeta,
-} from "../telemetry";
-import { seedTelemetryById, seedTelemetryMetaById } from "../data/seedLaps";
+import type { TelemetryAnalysisProps } from "../types/racing";
 import {
   LineChart,
   Line,
@@ -22,91 +13,40 @@ import {
   ResponsiveContainer,
   Legend as RechartLegend,
 } from "recharts";
+import { useTelemetryAnalysis } from "./hooks/useTelemetryAnalysis";
+import { formatTime } from "./utils/time";
+import { formatIdentifierLabel } from "./utils/displayFormatters";
 
-interface TelemetryAnalysisProps {
-  laps: LapData[];
-  lastUploadedTelemetry?: any[];
-}
+type VisibleLineKey = "speed" | "throttle" | "brake";
 
 export function TelemetryAnalysis({ laps, lastUploadedTelemetry }: TelemetryAnalysisProps) {
-  const [telemetry, setTelemetry] = useState<TelemetrySample[]>([]);
-  const [selectedLapId, setSelectedLapId] = useState<string>("");
-  const [selectedMeta, setSelectedMeta] = useState<TelemetryMeta | null>(null);
   const [visibleLines, setVisibleLines] = useState({
     speed: true,
     throttle: true,
     brake: true,
   });
 
-  useEffect(() => {
-    if (!selectedLapId && laps.length > 0) {
-      setSelectedLapId(laps[0].id); // Default to first lap
+  const {
+    telemetry,
+    selectedLapId,
+    setSelectedLapId,
+    selectedMeta,
+    maxSpeed,
+    avgSpeed,
+    avgThrottle,
+    avgBrake,
+    maxBrake,
+    gearChanges,
+    lapDurationMs,
+  } = useTelemetryAnalysis(laps, lastUploadedTelemetry);
+
+  const selectedLap = laps.find((lap) => lap.id === selectedLapId);
+
+  const handleLegendClick = (o: { dataKey?: string }) => {
+    const dataKey = o.dataKey as VisibleLineKey | undefined;
+    if (!dataKey) {
+      return;
     }
-  }, [laps, selectedLapId]);
-
-  useEffect(() => {
-    if (!selectedLapId) return;
-
-    try {
-      const stored = JSON.parse(localStorage.getItem("telemetryByLapId") || "{}");
-      const storedMeta = JSON.parse(localStorage.getItem("telemetryMetaByLapId") || "{}");
-
-      const lapTelemetry =
-        stored[selectedLapId] ??
-        seedTelemetryById[selectedLapId] ??
-        lastUploadedTelemetry ??
-        [];
-
-      const lapMeta =
-        storedMeta[selectedLapId] ??
-        seedTelemetryMetaById[selectedLapId] ?? // Fixed: was seedTelemetryMetaByLapId
-        null;
-
-      setTelemetry(lapTelemetry);
-      setSelectedMeta(lapMeta);
-    } catch (error) {
-      console.error("Error loading telemetry:", error);
-      setTelemetry([]);
-      setSelectedMeta(null);
-    }
-  }, [selectedLapId, lastUploadedTelemetry]);
-
-  const brakingSeries = useMemo(() => getBrakingSeries(telemetry), [telemetry]);
-  const gasSeries = useMemo(() => getGasSeries(telemetry), [telemetry]);
-  const gearSeries = useMemo(() => getGearSeries(telemetry), [telemetry]);
-  const deltaSeries = useMemo(
-    () => getDeltaTimeSeries(telemetry, selectedMeta ?? undefined),
-    [telemetry, selectedMeta]
-  );
-
-  const maxSpeed = telemetry.length ? Math.max(...telemetry.map((t) => t.speed ?? 0)) : 0;
-  const avgSpeed = telemetry.length
-    ? telemetry.reduce((a, b) => a + (b.speed ?? 0), 0) / telemetry.length
-    : 0;
-
-  const avgThrottle = gasSeries.length
-    ? gasSeries.reduce((a, b) => a + b.throttle, 0) / gasSeries.length
-    : 0;
-
-  const avgBrake = brakingSeries.length
-    ? brakingSeries.reduce((a, b) => a + b.brake, 0) / brakingSeries.length
-    : 0;
-
-  const maxBrake = brakingSeries.length
-    ? Math.max(...brakingSeries.map((b) => b.brake))
-    : 0;
-
-  const gearChanges = gearSeries.reduce((acc, curr, i, arr) => {
-    if (i === 0) return 0;
-    return acc + (arr[i - 1].gear !== curr.gear ? 1 : 0);
-  }, 0);
-
-  const lapDurationMs = deltaSeries.length
-    ? deltaSeries[deltaSeries.length - 1].deltaMs
-    : 0;
-
-  const handleLegendClick = (o: any) => {
-    const { dataKey } = o;
     setVisibleLines((prev) => ({ ...prev, [dataKey]: !prev[dataKey] }));
   };
 
@@ -124,7 +64,7 @@ export function TelemetryAnalysis({ laps, lastUploadedTelemetry }: TelemetryAnal
             <SelectContent>
               {laps.map((lap) => (
                 <SelectItem key={lap.id} value={lap.id}>
-                  {lap.trackName} — {lap.carModel} — {(lap.lapTime / 1000).toFixed(3)}s
+                  {formatIdentifierLabel(lap.trackName)} - {formatIdentifierLabel(lap.carModel)} - {formatTime(lap.lapTime)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -132,7 +72,12 @@ export function TelemetryAnalysis({ laps, lastUploadedTelemetry }: TelemetryAnal
         </CardContent>
       </Card>
 
-      <TelemetryMetadata meta={selectedMeta ?? undefined} />
+      <TelemetryMetadata
+        meta={selectedMeta ?? undefined}
+        fallbackTrackName={selectedLap?.trackName}
+        fallbackCarName={selectedLap?.carModel}
+        fallbackLapTimeMs={selectedLap?.lapTime}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>

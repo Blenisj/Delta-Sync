@@ -7,7 +7,7 @@ import {
 } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Clock, TrendingUp, Trophy, Zap } from "lucide-react";
-import type { LapData } from "../types/racing";
+import type { DashboardProps } from "../types/racing";
 import {
   LineChart,
   Line,
@@ -16,13 +16,13 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
-interface DashboardProps {
-  laps: LapData[];
-  lastUploadedTelemetry?: any[]; // added for GT7-style graph
-}
+import { useDashboardData } from "./hooks/useDashboardData";
+import { formatTime } from "./utils/time";
+import { formatIdentifierLabel, formatWeatherLabel } from "./utils/displayFormatters";
 
 export function Dashboard({ laps, lastUploadedTelemetry }: DashboardProps) {
+  const { stats, recentLaps } = useDashboardData(laps);
+
   if (!laps || laps.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
@@ -30,26 +30,6 @@ export function Dashboard({ laps, lastUploadedTelemetry }: DashboardProps) {
       </div>
     );
   }
-
-  const bestLap = laps.reduce(
-    (best, current) => (current.lapTime < best.lapTime ? current : best),
-    laps[0]
-  );
-
-  const recentLaps = laps.slice(-5).reverse();
-
-  const averageLapTime =
-    laps.length > 0
-      ? laps.reduce((sum, lap) => sum + lap.lapTime, 0) / laps.length
-      : 0;
-
-  const uniqueTracks = new Set(laps.map((lap) => lap.trackName)).size;
-
-  const formatTime = (ms: number) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = ((ms % 60000) / 1000).toFixed(3);
-    return `${minutes}:${seconds.padStart(6, "0")}`;
-  };
 
   return (
     <div className="space-y-6">
@@ -61,7 +41,7 @@ export function Dashboard({ laps, lastUploadedTelemetry }: DashboardProps) {
             <Trophy className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{laps.length}</div>
+            <div className="text-2xl font-bold">{stats.totalLaps}</div>
           </CardContent>
         </Card>
 
@@ -72,11 +52,11 @@ export function Dashboard({ laps, lastUploadedTelemetry }: DashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {bestLap ? formatTime(bestLap.lapTime) : "--:--"}
+              {stats.bestLap ? formatTime(stats.bestLap.lapTime) : "--:--"}
             </div>
-            {bestLap && (
+            {stats.bestLap && (
               <p className="text-xs text-muted-foreground">
-                {bestLap.trackName} • {bestLap.carModel}
+                {formatIdentifierLabel(stats.bestLap.trackName)} • {formatIdentifierLabel(stats.bestLap.carModel)}
               </p>
             )}
           </CardContent>
@@ -91,7 +71,7 @@ export function Dashboard({ laps, lastUploadedTelemetry }: DashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {averageLapTime > 0 ? formatTime(averageLapTime) : "--:--"}
+              {stats.averageLapTime > 0 ? formatTime(stats.averageLapTime) : "--:--"}
             </div>
           </CardContent>
         </Card>
@@ -102,7 +82,7 @@ export function Dashboard({ laps, lastUploadedTelemetry }: DashboardProps) {
             <Zap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{uniqueTracks}</div>
+            <div className="text-2xl font-bold">{stats.uniqueTracks}</div>
           </CardContent>
         </Card>
       </div>
@@ -122,13 +102,13 @@ export function Dashboard({ laps, lastUploadedTelemetry }: DashboardProps) {
                   className="flex items-center justify-between p-3 border rounded-lg"
                 >
                   <div className="flex flex-col">
-                    <div className="font-medium">{lap.trackName}</div>
+                    <div className="font-medium">{formatIdentifierLabel(lap.trackName)}</div>
                     <div className="text-sm text-muted-foreground">
-                      {lap.carModel}
+                      {formatIdentifierLabel(lap.carModel)}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge variant="secondary">{lap.weather}</Badge>
+                    <Badge variant="secondary">{formatWeatherLabel(lap.weather)}</Badge>
                     <div className="text-right">
                       <div className="font-bold">
                         {formatTime(lap.lapTime)}

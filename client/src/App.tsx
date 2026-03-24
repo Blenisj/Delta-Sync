@@ -16,10 +16,9 @@ import { LapComparison } from "./components/LapComparison";
 import { TelemetryAnalysis } from "./components/TelemetryAnalysis";
 import { Leaderboard } from "./components/Leaderboard";
 import type { LapData } from "./types/racing";
-import { seedLaps } from "./data/seedLaps";
+import { getAll } from "../../database/db_funcs";
 import {
   BarChart3,
-  Upload,
   GitCompare,
   Activity,
   Car,
@@ -42,35 +41,75 @@ export default function App() {
   const [activeView, setActiveView] = useState("dashboard");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
-  // Load laps from localStorage
+  const toWeather = (value: unknown): LapData["weather"] => {
+    const raw = typeof value === "string" ? value.toLowerCase() : "dry";
+    if (raw === "wet" || raw === "mixed") return raw;
+    return "dry";
+  };
+
+  const toLapData = (record: any): LapData => {
+    const metadata = record?.metadata ?? {};
+    const telemetry = Array.isArray(record?.telemetry) ? record.telemetry : [];
+
+    const speeds = telemetry
+      .map((sample: any) => Number(sample?.speed ?? 0))
+      .filter((speed: number) => Number.isFinite(speed));
+
+    const computedTopSpeed = speeds.length ? Math.max(...speeds) : 0;
+    const computedAverageSpeed = speeds.length
+      ? speeds.reduce((sum: number, speed: number) => sum + speed, 0) / speeds.length
+      : 0;
+
+    return {
+      id: String(record?.id ?? crypto.randomUUID()),
+      trackName: String(record?.trackName ?? record?.track_name ?? metadata?.track_name ?? "unknown_track"),
+      carModel: String(record?.carModel ?? record?.car_name ?? metadata?.car_name ?? "unknown_car"),
+      lapTime: Number(record?.lapTime ?? record?.lap_duration_ms ?? record?.best_lap_time_ms ?? metadata?.lap_duration_ms ?? metadata?.best_lap_time_ms ?? 0),
+      dateRecorded: new Date(record?.dateRecorded ?? record?.last_save_timestamp ?? metadata?.date_recorded ?? metadata?.last_save_timestamp ?? Date.now()),
+      weather: toWeather(record?.weather ?? metadata?.weather),
+      temperature: Number(record?.temperature ?? metadata?.temperature ?? 20),
+      sectorTimes: Array.isArray(record?.sectorTimes)
+        ? record.sectorTimes
+        : Array.isArray(record?.sector_times_ms)
+          ? record.sector_times_ms
+        : Array.isArray(metadata?.sector_times_ms)
+          ? metadata.sector_times_ms
+          : [],
+      topSpeed: Number(record?.topSpeed ?? computedTopSpeed),
+      averageSpeed: Number(record?.averageSpeed ?? computedAverageSpeed),
+    };
+  };
+
   useEffect(() => {
-    const savedLaps = localStorage.getItem("assettoCorsa_laps");
-    if (savedLaps) {
-      const parsed = JSON.parse(savedLaps);
-      const lapsWithDates = parsed.map((lap: any) => ({
-        ...lap,
-        dateRecorded: new Date(lap.dateRecorded),
-      }));
+    async function fetchFirebaseLaps() {
+      try {
+        const data = await getAll();
 
-      const byId = new Map<string, LapData>();
-      seedLaps.forEach((lap) => byId.set(lap.id, lap));
-      lapsWithDates.forEach((lap: LapData) => byId.set(lap.id, lap));
+        const normalizedLaps = data.map((record: any) => toLapData(record));
+        setLaps(normalizedLaps);
 
-      setLaps(Array.from(byId.values()));
-    } else {
-      setLaps(seedLaps);
+        const telemetryByLapId: Record<string, any[]> = {};
+        const telemetryMetaByLapId: Record<string, any> = {};
+
+        normalizedLaps.forEach((lap: LapData, index: number) => {
+          const source = data[index] ?? {};
+          telemetryByLapId[lap.id] = Array.isArray(source.telemetry) ? source.telemetry : [];
+          telemetryMetaByLapId[lap.id] = source.metadata ?? source ?? {};
+        });
+
+        localStorage.setItem("telemetryByLapId", JSON.stringify(telemetryByLapId));
+        localStorage.setItem("telemetryMetaByLapId", JSON.stringify(telemetryMetaByLapId));
+      } catch (error) {
+        console.error("Failed to load laps from Firebase:", error);
+        setLaps([]);
+      }
     }
-  }, []);
 
-  // Save laps to localStorage when changed
-  useEffect(() => {
-    localStorage.setItem("assettoCorsa_laps", JSON.stringify(laps));
-  }, [laps]);
+    fetchFirebaseLaps();
+  }, []);
 
   //  Modified to also handle telemetry JSON
   const handleAddLap = (newLap: LapData, telemetryData?: any[], telemetryMeta?: any) => {
-    setLaps((prevLaps) => [...prevLaps, newLap]);
-
     if (telemetryData && telemetryData.length > 0) {
       setLastUploadedTelemetry(telemetryData);
 

@@ -1,5 +1,5 @@
 import type { LapData } from "../types/racing";
-import type { TelemetrySample, TelemetryMeta } from "../telemetry";
+import type { TelemetrySample, TelemetryMeta } from "../telemetry/index";
 
 type TelemetryFile = {
   metadata?: {

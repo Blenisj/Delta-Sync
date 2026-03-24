@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { formatIdentifierLabel } from "./utils/displayFormatters";
 
 interface TelemetryMeta {
   car_name?: string;
@@ -7,6 +8,13 @@ interface TelemetryMeta {
   best_lap_time_ms?: number;
   samples_logged?: number;
   last_save_timestamp?: string;
+}
+
+interface TelemetryMetadataProps {
+  meta?: TelemetryMeta | null;
+  fallbackCarName?: string;
+  fallbackTrackName?: string;
+  fallbackLapTimeMs?: number;
 }
 
 function formatLapTime(ms?: number | null): string {
@@ -19,7 +27,12 @@ function formatLapTime(ms?: number | null): string {
   return `${minutes}:${seconds.toFixed(3).padStart(6, "0")}`;
 }
 
-export function TelemetryMetadata({ meta }: { meta?: TelemetryMeta | null }) {
+export function TelemetryMetadata({
+  meta,
+  fallbackCarName,
+  fallbackTrackName,
+  fallbackLapTimeMs,
+}: TelemetryMetadataProps) {
   const [storedMeta, setStoredMeta] = useState<TelemetryMeta | null>(null);
 
   useEffect(() => {
@@ -51,15 +64,15 @@ export function TelemetryMetadata({ meta }: { meta?: TelemetryMeta | null }) {
       <CardContent className="text-sm text-muted-foreground space-y-1">
         <p>
           <span className="font-medium text-foreground">Car:</span>{" "}
-          {activeMeta.car_name || "Unknown"}
+          {formatIdentifierLabel(activeMeta.car_name ?? fallbackCarName)}
         </p>
         <p>
           <span className="font-medium text-foreground">Track:</span>{" "}
-          {activeMeta.track_name || "Unknown"}
+          {formatIdentifierLabel(activeMeta.track_name ?? fallbackTrackName)}
         </p>
         <p>
           <span className="font-medium text-foreground">Best Lap:</span>{" "}
-          {formatLapTime(activeMeta.best_lap_time_ms)}
+          {formatLapTime(activeMeta.best_lap_time_ms ?? fallbackLapTimeMs)}
         </p>
         {typeof activeMeta.samples_logged === "number" && (
           <p>
