@@ -16,7 +16,6 @@ import { LapComparison } from "./components/LapComparison";
 import { TelemetryAnalysis } from "./components/TelemetryAnalysis";
 import { Leaderboard } from "./components/Leaderboard";
 import type { LapData } from "./types/racing";
-import { getAll } from "../../database/db_funcs";
 import {
   BarChart3,
   GitCompare,
@@ -81,31 +80,54 @@ export default function App() {
   };
 
   useEffect(() => {
-    async function fetchFirebaseLaps() {
+    async function fetchFromRTDB() {
       try {
-        const data = await getAll();
+        // 1. Point to our fresh v2 database folder
+        const response = await fetch("https://deltasync-c17bc-default-rtdb.firebaseio.com/laps_v2.json");
+        const rawData = await response.json();
 
+        if (!rawData) return;
+
+        // 2. Translate dictionary to array (Fixed TypeScript strictness here)
+        const data = Object.entries(rawData).map(([firebaseId, lapData]: [string, any]) => ({
+          id: firebaseId,
+          ...lapData
+        }));
+
+        // 3. Use your app's existing toLapData function to parse it perfectly
         const normalizedLaps = data.map((record: any) => toLapData(record));
+        
+        // Sort newest first
+        normalizedLaps.sort((a, b) => b.dateRecorded.getTime() - a.dateRecorded.getTime());
         setLaps(normalizedLaps);
 
+        // 4. Safely reconstruct the LocalStorage maps your comparison charts rely on
         const telemetryByLapId: Record<string, any[]> = {};
         const telemetryMetaByLapId: Record<string, any> = {};
 
-        normalizedLaps.forEach((lap: LapData, index: number) => {
-          const source = data[index] ?? {};
+        normalizedLaps.forEach((lap: LapData) => {
+          const source = data.find(d => d.id === lap.id) || {};
           telemetryByLapId[lap.id] = Array.isArray(source.telemetry) ? source.telemetry : [];
-          telemetryMetaByLapId[lap.id] = source.metadata ?? source ?? {};
+          telemetryMetaByLapId[lap.id] = source.metadata || {};
         });
 
         localStorage.setItem("telemetryByLapId", JSON.stringify(telemetryByLapId));
         localStorage.setItem("telemetryMetaByLapId", JSON.stringify(telemetryMetaByLapId));
+
+        // Feed the newest lap to the dashboard graph
+        if (normalizedLaps.length > 0) {
+          setLastUploadedTelemetry(telemetryByLapId[normalizedLaps[0].id]);
+        }
+
       } catch (error) {
-        console.error("Failed to load laps from Firebase:", error);
-        setLaps([]);
+        console.error("Failed to load laps from RTDB:", error);
       }
     }
 
-    fetchFirebaseLaps();
+    // Fetch immediately, then poll every 5 seconds
+    fetchFromRTDB();
+    const intervalId = setInterval(fetchFromRTDB, 5000);
+    return () => clearInterval(intervalId);
   }, []);
 
   //  Modified to also handle telemetry JSON
