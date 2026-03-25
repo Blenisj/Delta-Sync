@@ -8,19 +8,11 @@ import {
 import { Badge } from "./ui/badge";
 import { Clock, TrendingUp, Trophy, Zap } from "lucide-react";
 import type { DashboardProps } from "../types/racing";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { useDashboardData } from "./hooks/useDashboardData";
 import { formatTime } from "./utils/time";
 import { formatIdentifierLabel, formatWeatherLabel } from "./utils/displayFormatters";
 
-export function Dashboard({ laps, lastUploadedTelemetry }: DashboardProps) {
+export function Dashboard({ laps }: DashboardProps) {
   const { stats, recentLaps } = useDashboardData(laps);
 
   if (!laps || laps.length === 0) {
@@ -128,50 +120,6 @@ export function Dashboard({ laps, lastUploadedTelemetry }: DashboardProps) {
           )}
         </CardContent>
       </Card>
-
-      {/* GT7-style Telemetry Graph */}
-      {lastUploadedTelemetry && lastUploadedTelemetry.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Lap Telemetry Overview</CardTitle>
-            <CardDescription>
-              Speed, Throttle, and Brake over the lap
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="w-full h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={lastUploadedTelemetry.slice(0, 500)}>
-                  <XAxis dataKey="speed" hide />
-                  <YAxis />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="speed"
-                    stroke="#38bdf8"
-                    dot={false}
-                    name="Speed (km/h)"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="throttle"
-                    stroke="#22c55e"
-                    dot={false}
-                    name="Throttle"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="brake"
-                    stroke="#ef4444"
-                    dot={false}
-                    name="Brake"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
