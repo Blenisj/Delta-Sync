@@ -4,8 +4,6 @@ export interface LapData {
   carModel: string;
   lapTime: number; // in milliseconds
   dateRecorded: Date;
-  weather: 'dry' | 'wet' | 'mixed';
-  temperature: number; // in Celsius
   sectorTimes: number[]; // array of sector times in milliseconds
   topSpeed: number; // in km/h
   averageSpeed: number; // in km/h

@@ -50,8 +50,6 @@ const toLapData = (path: string, file: TelemetryFile | any[]): LapData => {
     dateRecorded: metadata.date_recorded
       ? new Date(metadata.date_recorded)
       : new Date(),
-    weather: metadata.weather ?? "dry",
-    temperature: metadata.temperature ?? 20,
     sectorTimes: metadata.sector_times_ms ?? [],
     topSpeed,
     averageSpeed,

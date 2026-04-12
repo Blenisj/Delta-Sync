@@ -16,6 +16,7 @@ import {
 import { useTelemetryAnalysis } from "./hooks/useTelemetryAnalysis";
 import { formatTime } from "./utils/time";
 import { formatIdentifierLabel } from "./utils/displayFormatters";
+import { MapPin, Car, Flag } from "lucide-react";
 
 type VisibleLineKey = "speed" | "throttle" | "brake";
 
@@ -28,8 +29,15 @@ export function TelemetryAnalysis({ laps, lastUploadedTelemetry }: TelemetryAnal
 
   const {
     telemetry,
+    selectedTrack,
+    selectedCar,
     selectedLapId,
     setSelectedLapId,
+    uniqueTracks,
+    uniqueCars,
+    filteredLaps,
+    handleTrackChange,
+    handleCarChange,
     selectedMeta,
     maxSpeed,
     avgSpeed,
@@ -57,18 +65,71 @@ export function TelemetryAnalysis({ laps, lastUploadedTelemetry }: TelemetryAnal
           <CardTitle>Select Lap Telemetry</CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={selectedLapId} onValueChange={setSelectedLapId}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select lap" />
-            </SelectTrigger>
-            <SelectContent>
-              {laps.map((lap) => (
-                <SelectItem key={lap.id} value={lap.id}>
-                  {formatIdentifierLabel(lap.trackName)} - {formatIdentifierLabel(lap.carModel)} - {formatTime(lap.lapTime)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="space-y-4">
+            {/* Track Filter */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                Track
+              </label>
+              <Select value={selectedTrack} onValueChange={handleTrackChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a track" />
+                </SelectTrigger>
+                <SelectContent>
+                  {uniqueTracks.map((track) => (
+                    <SelectItem key={track} value={track}>
+                      {formatIdentifierLabel(track)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Car Filter */}
+            {selectedTrack && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Car className="h-4 w-4" />
+                  Car
+                </label>
+                <Select value={selectedCar} onValueChange={handleCarChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a car" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {uniqueCars.map((car) => (
+                      <SelectItem key={car} value={car}>
+                        {formatIdentifierLabel(car)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Lap Select */}
+            {selectedCar && filteredLaps.length > 0 && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Flag className="h-4 w-4" />
+                  Lap
+                </label>
+                <Select value={selectedLapId} onValueChange={setSelectedLapId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a lap" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredLaps.map((lap) => (
+                      <SelectItem key={lap.id} value={lap.id}>
+                        {formatTime(lap.lapTime)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -107,7 +168,7 @@ export function TelemetryAnalysis({ laps, lastUploadedTelemetry }: TelemetryAnal
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">Lap Duration</p>
-            <p className="text-2xl font-semibold">{(lapDurationMs / 1000).toFixed(3)}s</p>
+            <p className="text-2xl font-semibold">{formatTime(lapDurationMs)}</p>
           </CardContent>
         </Card>
 

@@ -5,12 +5,11 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Badge } from "./ui/badge";
 import { Clock, TrendingUp, Trophy, Zap } from "lucide-react";
 import type { DashboardProps } from "../types/racing";
 import { useDashboardData } from "./hooks/useDashboardData";
 import { formatTime } from "./utils/time";
-import { formatIdentifierLabel, formatWeatherLabel } from "./utils/displayFormatters";
+import { formatIdentifierLabel } from "./utils/displayFormatters";
 
 export function Dashboard({ laps }: DashboardProps) {
   const { stats, recentLaps } = useDashboardData(laps);
@@ -100,7 +99,6 @@ export function Dashboard({ laps }: DashboardProps) {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge variant="secondary">{formatWeatherLabel(lap.weather)}</Badge>
                     <div className="text-right">
                       <div className="font-bold">
                         {formatTime(lap.lapTime)}

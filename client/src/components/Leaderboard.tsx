@@ -6,7 +6,7 @@ import { Trophy, Clock, Car, MapPin, Filter } from "lucide-react";
 import type { LeaderboardProps } from "../types/racing";
 import { useLeaderboard } from "./hooks/useLeaderboard";
 import { getRankIcon, getPositionDelta, formatLeaderboardTime } from "./utils/leaderboardUtils";
-import { formatIdentifierLabel, formatWeatherLabel } from "./utils/displayFormatters";
+import { formatIdentifierLabel } from "./utils/displayFormatters";
 
 export function Leaderboard({ userLaps }: LeaderboardProps) {
   const {
@@ -125,15 +125,6 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        {formatWeatherLabel(entry.weather)}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {entry.temperature}°C
-                      </span>
-                    </div>
-                    
                     <div className="text-right">
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-muted-foreground" />

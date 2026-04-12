@@ -44,9 +44,3 @@ export function formatIdentifierLabel(value?: string | null): string {
 
   return trimmedWords.map(formatToken).join(" ");
 }
-
-export function formatWeatherLabel(weather?: string | null): string {
-  if (!weather) return "Unknown";
-  const lower = weather.toLowerCase();
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
-}

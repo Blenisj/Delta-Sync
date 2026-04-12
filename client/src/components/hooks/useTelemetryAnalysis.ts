@@ -27,14 +27,53 @@ export interface TelemetryAnalysisData {
 
 export function useTelemetryAnalysis(laps: LapData[], lastUploadedTelemetry?: any[]) {
   const [telemetry, setTelemetry] = useState<TelemetrySample[]>([]);
+  const [selectedTrack, setSelectedTrack] = useState<string>("");
+  const [selectedCar, setSelectedCar] = useState<string>("");
   const [selectedLapId, setSelectedLapId] = useState<string>("");
   const [selectedMeta, setSelectedMeta] = useState<TelemetryMeta | null>(null);
 
+  const uniqueTracks = useMemo(() => {
+    return [...new Set(laps.map((l) => l.trackName))].sort();
+  }, [laps]);
+
+  const uniqueCars = useMemo(() => {
+    if (!selectedTrack) return [];
+    const cars = laps
+      .filter((l) => l.trackName === selectedTrack)
+      .map((l) => l.carModel);
+    return [...new Set(cars)].sort();
+  }, [laps, selectedTrack]);
+
+  const filteredLaps = useMemo(() => {
+    if (!selectedTrack || !selectedCar) return [];
+    return laps.filter(
+      (l) => l.trackName === selectedTrack && l.carModel === selectedCar
+    );
+  }, [laps, selectedTrack, selectedCar]);
+
+  const handleTrackChange = (track: string) => {
+    setSelectedTrack(track);
+    setSelectedCar("");
+    setSelectedLapId("");
+  };
+
+  const handleCarChange = (car: string) => {
+    setSelectedCar(car);
+    setSelectedLapId("");
+  };
+
+  // Auto-select when only one option exists
   useEffect(() => {
-    if (!selectedLapId && laps.length > 0) {
-      setSelectedLapId(laps[0].id); // Default to first lap
+    if (selectedTrack && uniqueCars.length === 1 && !selectedCar) {
+      setSelectedCar(uniqueCars[0]);
     }
-  }, [laps, selectedLapId]);
+  }, [selectedTrack, uniqueCars, selectedCar]);
+
+  useEffect(() => {
+    if (!selectedLapId && filteredLaps.length > 0) {
+      setSelectedLapId(filteredLaps[0].id);
+    }
+  }, [filteredLaps, selectedLapId]);
 
   useEffect(() => {
     if (!selectedLapId) return;
@@ -93,14 +132,23 @@ export function useTelemetryAnalysis(laps: LapData[], lastUploadedTelemetry?: an
     return acc + (arr[i - 1].gear !== curr.gear ? 1 : 0);
   }, 0);
 
-  const lapDurationMs = deltaSeries.length
-    ? deltaSeries[deltaSeries.length - 1].deltaMs
-    : 0;
+  const lapDurationMs =
+    selectedMeta?.lap_duration_ms ??
+    selectedMeta?.best_lap_time_ms ??
+    laps.find((l) => l.id === selectedLapId)?.lapTime ??
+    (deltaSeries.length ? deltaSeries[deltaSeries.length - 1].deltaMs : 0);
 
   return {
     telemetry,
+    selectedTrack,
+    selectedCar,
     selectedLapId,
     setSelectedLapId,
+    uniqueTracks,
+    uniqueCars,
+    filteredLaps,
+    handleTrackChange,
+    handleCarChange,
     selectedMeta,
     brakingSeries,
     gasSeries,

@@ -40,12 +40,6 @@ export default function App() {
   const [activeView, setActiveView] = useState("dashboard");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
-  const toWeather = (value: unknown): LapData["weather"] => {
-    const raw = typeof value === "string" ? value.toLowerCase() : "dry";
-    if (raw === "wet" || raw === "mixed") return raw;
-    return "dry";
-  };
-
   const toLapData = (record: any): LapData => {
     const metadata = record?.metadata ?? {};
     const telemetry = Array.isArray(record?.telemetry) ? record.telemetry : [];
@@ -65,8 +59,6 @@ export default function App() {
       carModel: String(record?.carModel ?? record?.car_name ?? metadata?.car_name ?? "unknown_car"),
       lapTime: Number(record?.lapTime ?? record?.lap_duration_ms ?? record?.best_lap_time_ms ?? metadata?.lap_duration_ms ?? metadata?.best_lap_time_ms ?? 0),
       dateRecorded: new Date(record?.dateRecorded ?? record?.last_save_timestamp ?? metadata?.date_recorded ?? metadata?.last_save_timestamp ?? Date.now()),
-      weather: toWeather(record?.weather ?? metadata?.weather),
-      temperature: Number(record?.temperature ?? metadata?.temperature ?? 20),
       sectorTimes: Array.isArray(record?.sectorTimes)
         ? record.sectorTimes
         : Array.isArray(record?.sector_times_ms)

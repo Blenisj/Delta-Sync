@@ -1,12 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Badge } from "./ui/badge";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { TrendingDown, TrendingUp, Clock, Target, MapPin, Activity } from "lucide-react";
 import type { LapComparisonProps } from "../types/racing";
 import { useLapComparison } from "./hooks/useLapComparison";
 import { formatLapTime, formatLapTimeDifference } from "./utils/lapComparisonUtils";
-import { formatIdentifierLabel, formatWeatherLabel } from "./utils/displayFormatters";
+import { formatIdentifierLabel } from "./utils/displayFormatters";
 
 export function LapComparison({ laps }: LapComparisonProps) {
   const {
@@ -28,7 +27,6 @@ export function LapComparison({ laps }: LapComparisonProps) {
     deltaComparison,
     gearChanges1,
     gearChanges2,
-    sectorComparisonData,
     handleTrackChange,
   } = useLapComparison(laps);
 
@@ -146,27 +144,6 @@ export function LapComparison({ laps }: LapComparisonProps) {
             </ResponsiveContainer>
           </div>
         );
-      case "sector":
-        return (
-          <div>
-            <h4 className="text-sm font-medium mb-2">Sector-by-Sector Analysis</h4>
-            <ResponsiveContainer width="100%" height={500}>
-              <BarChart data={sectorComparisonData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="sector" />
-                <YAxis />
-                <Tooltip 
-                  formatter={(value, name) => [
-                    `${Number(value).toFixed(3)}s`, 
-                    name === 'lap1' ? 'Reference' : 'Comparison'
-                  ]}
-                />
-                <Bar dataKey="lap1" fill="#8884d8" name="lap1" />
-                <Bar dataKey="lap2" fill="#82ca9d" name="lap2" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        );
       default:
         return null;
     }
@@ -280,7 +257,6 @@ export function LapComparison({ laps }: LapComparisonProps) {
                   <div className="text-2xl font-bold">{formatLapTime(lap1.lapTime)}</div>
                   <div className="text-sm text-muted-foreground">{formatIdentifierLabel(lap1.trackName)}</div>
                   <div className="text-sm text-muted-foreground">{formatIdentifierLabel(lap1.carModel)}</div>
-                  <Badge variant="secondary">{formatWeatherLabel(lap1.weather)}</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -297,7 +273,6 @@ export function LapComparison({ laps }: LapComparisonProps) {
                   <div className="text-2xl font-bold">{formatLapTime(lap2.lapTime)}</div>
                   <div className="text-sm text-muted-foreground">{formatIdentifierLabel(lap2.trackName)}</div>
                   <div className="text-sm text-muted-foreground">{formatIdentifierLabel(lap2.carModel)}</div>
-                  <Badge variant="secondary">{formatWeatherLabel(lap2.weather)}</Badge>
                   <div className="flex items-center gap-2 mt-2">
                     {lap2.lapTime < lap1.lapTime ? (
                       <TrendingDown className="h-4 w-4 text-green-500" />
@@ -337,7 +312,6 @@ export function LapComparison({ laps }: LapComparisonProps) {
                     <SelectItem value="brake">Brake Input</SelectItem>
                     <SelectItem value="gear">Gear Changes</SelectItem>
                     <SelectItem value="delta">Delta Time Progression</SelectItem>
-                    <SelectItem value="sector">Sector-by-Sector Analysis</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -41,8 +41,6 @@ export function createLapFromTelemetry(
     carModel: metadata?.car_name || "Unknown Car",
     lapTime: metadata?.best_lap_time_ms || 0,
     dateRecorded: new Date(),
-    weather: "dry",
-    temperature: 20,
     sectorTimes: [],
     topSpeed: maxSpeed,
     averageSpeed: avgSpeed,
