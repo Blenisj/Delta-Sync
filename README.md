@@ -34,7 +34,7 @@ cd client
 npm install
 ```
 
-If you add a backend later, also run:
+For the backend:
 ```powershell
 cd ..\backend
 npm install
@@ -43,11 +43,11 @@ python -m pip install firebase-admin
 
 Note: Database integration for the Python script requires access key from Firebase.
 
-# Install for rechart (ensures visuals for the graphs works on the frontend and is compatible with how tailwind manages it)
+## 2) Install for rechart (ensures visuals for the graphs works on the frontend and is compatible with how tailwind manages it)
 cd client
 npm install recharts
 
-## 2) Run the dev server
+## 3) Run the dev server
 ```powershell
 cd client
 npm run dev
@@ -60,7 +60,7 @@ npm install
 npm run dev
 ```
 
-## 3) Build and preview
+## 4) Build and preview
 ```powershell
 cd client
 npm run build
