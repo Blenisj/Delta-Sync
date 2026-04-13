@@ -44,12 +44,14 @@ python -m pip install firebase-admin
 Note: Database integration for the Python script requires access key from Firebase.
 
 ## 2) Install for rechart (ensures visuals for the graphs works on the frontend and is compatible with how tailwind manages it)
-cd client
+```powershell
+cd ..\client
 npm install recharts
+```
 
 ## 3) Run the dev server
 ```powershell
-cd client
+cd ..\client
 npm run dev
 ```
 Open http://localhost:5173
