@@ -87,13 +87,20 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {filteredAndSortedData.slice(0, 50).map((entry, index) => {
+            {filteredAndSortedData.slice(0, 50).map((entry: any, index: number) => {
               const position = index + 1;
               const delta = getPositionDelta(entry, position, filteredAndSortedData);
               
+              // --- THE BYPASS FIX ---
+              // useLeaderboard is stripping the name. Reach back to the raw source data!
+              const rawLap = userLaps.find(l => l.id === entry.id);
+              const displayName = rawLap?.userName || "Local Driver";
+              const initials = rawLap?.userInitials || "??";
+              // ----------------------
+
               return (
                 <div 
-                  key={`${entry.id}-${entry.userName}`}
+                  key={`${entry.id}-${displayName}`}
                   className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${
                     entry.isCurrentUser ? "bg-primary/5 border-primary/20" : "hover:bg-muted/50"
                   }`}
@@ -105,14 +112,16 @@ export function Leaderboard({ userLaps }: LeaderboardProps) {
 
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className={entry.isCurrentUser ? "bg-primary text-primary-foreground" : ""}>
-                        {entry.userInitials}
+                        {/* Use our bypassed initials */}
+                        {initials}
                       </AvatarFallback>
                     </Avatar>
                     
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
                         <span className={`font-medium ${entry.isCurrentUser ? "text-primary" : ""}`}>
-                          {entry.userName}
+                          {/* Use our bypassed name */}
+                          {displayName}
                         </span>
                         {entry.isCurrentUser && (
                           <Badge variant="secondary" className="text-xs">You</Badge>

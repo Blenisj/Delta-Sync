@@ -45,7 +45,6 @@ export function TelemetryAnalysis({ laps, lastUploadedTelemetry }: TelemetryAnal
     avgBrake,
     maxBrake,
     gearChanges,
-    lapDurationMs,
   } = useTelemetryAnalysis(laps, lastUploadedTelemetry);
 
   const selectedLap = laps.find((lap) => lap.id === selectedLapId);
@@ -168,7 +167,8 @@ export function TelemetryAnalysis({ laps, lastUploadedTelemetry }: TelemetryAnal
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">Lap Duration</p>
-            <p className="text-2xl font-semibold">{formatTime(lapDurationMs)}</p>
+            {/* --- YOUR MERGE: Replaced the broken hook calculation with the actual lap time --- */}
+            <p className="text-2xl font-semibold">{formatTime(selectedLap?.lapTime || 0)}</p>
           </CardContent>
         </Card>
 

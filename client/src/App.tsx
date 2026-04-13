@@ -53,8 +53,18 @@ export default function App() {
       ? speeds.reduce((sum: number, speed: number) => sum + speed, 0) / speeds.length
       : 0;
 
+    // --- YOUR MERGE: Parse the name and generate initials ---
+    const rawDriverName = String(record?.driverName || record?.driver_name || metadata?.driver_name || "Local Driver");
+    const computedInitials = rawDriverName === "Local Driver" ? "??" : rawDriverName.substring(0, 2).toUpperCase();
+    // --------------------------------------------------------
+
     return {
       id: String(record?.id ?? crypto.randomUUID()),
+      
+      // Pass the perfectly formatted name/initials straight to the UI
+      userName: rawDriverName,
+      userInitials: computedInitials,
+
       trackName: String(record?.trackName ?? record?.track_name ?? metadata?.track_name ?? "unknown_track"),
       carModel: String(record?.carModel ?? record?.car_name ?? metadata?.car_name ?? "unknown_car"),
       lapTime: Number(record?.lapTime ?? record?.lap_duration_ms ?? record?.best_lap_time_ms ?? metadata?.lap_duration_ms ?? metadata?.best_lap_time_ms ?? 0),
@@ -74,26 +84,21 @@ export default function App() {
   useEffect(() => {
     async function fetchFromRTDB() {
       try {
-        // 1. Point to our fresh v2 database folder
         const response = await fetch("https://deltasync-c17bc-default-rtdb.firebaseio.com/laps_v2.json");
         const rawData = await response.json();
 
         if (!rawData) return;
 
-        // 2. Translate dictionary to array (Fixed TypeScript strictness here)
         const data = Object.entries(rawData).map(([firebaseId, lapData]: [string, any]) => ({
           id: firebaseId,
           ...lapData
         }));
 
-        // 3. Use your app's existing toLapData function to parse it perfectly
         const normalizedLaps = data.map((record: any) => toLapData(record));
         
-        // Sort newest first
         normalizedLaps.sort((a, b) => b.dateRecorded.getTime() - a.dateRecorded.getTime());
         setLaps(normalizedLaps);
 
-        // 4. Safely reconstruct the LocalStorage maps your comparison charts rely on
         const telemetryByLapId: Record<string, any[]> = {};
         const telemetryMetaByLapId: Record<string, any> = {};
 
@@ -106,7 +111,6 @@ export default function App() {
         localStorage.setItem("telemetryByLapId", JSON.stringify(telemetryByLapId));
         localStorage.setItem("telemetryMetaByLapId", JSON.stringify(telemetryMetaByLapId));
 
-        // Feed the newest lap to the dashboard graph
         if (normalizedLaps.length > 0) {
           setLastUploadedTelemetry(telemetryByLapId[normalizedLaps[0].id]);
         }
@@ -116,13 +120,11 @@ export default function App() {
       }
     }
 
-    // Fetch immediately, then poll every 5 seconds
     fetchFromRTDB();
     const intervalId = setInterval(fetchFromRTDB, 5000);
     return () => clearInterval(intervalId);
   }, []);
 
-  //  Modified to also handle telemetry JSON
   const handleAddLap = (newLap: LapData, telemetryData?: any[], telemetryMeta?: any) => {
     if (telemetryData && telemetryData.length > 0) {
       setLastUploadedTelemetry(telemetryData);
@@ -242,7 +244,6 @@ export default function App() {
                       Upload your DeltaSync telemetry JSON file
                     </DialogDescription>
                   </DialogHeader>
-                  {/* Pass the telemetry handler */}
                   <LapUpload onAddLap={handleAddLap} />
                 </DialogContent>
               </Dialog>

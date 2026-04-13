@@ -7,6 +7,10 @@ export interface LapData {
   sectorTimes: number[]; // array of sector times in milliseconds
   topSpeed: number; // in km/h
   averageSpeed: number; // in km/h
+  
+  // --- YOUR MERGE: Added for the Leaderboard ---
+  userName?: string;
+  userInitials?: string;
 }
 
 export interface TelemetryPoint {
