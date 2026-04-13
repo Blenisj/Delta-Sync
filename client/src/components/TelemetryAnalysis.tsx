@@ -186,9 +186,6 @@ export function TelemetryAnalysis({ laps, lastUploadedTelemetry }: TelemetryAnal
       <Card>
         <CardHeader>
           <CardTitle>Telemetry Analysis</CardTitle>
-          <p className="text-muted-foreground text-sm">
-            Gran Turismo–style data overlay for speed, throttle & brake
-          </p>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
